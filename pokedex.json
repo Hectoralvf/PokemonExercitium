@@ -1,0 +1,524 @@
+{
+    "3": {
+        "pid": 3,
+        "name": "Venusaur",
+        "mainType": "Grass",
+        "secType": "Poison",
+        "baseHP": 80,
+        "baseAtt": 82,
+        "baseDef": 83,
+        "baseSpAtt": 100,
+        "baseSpDef": 100,
+        "baseSpe": 80,
+        "moveset": [
+            "Growth",
+            "Giga Drain",
+            "Sludge Bomb",
+            "Hidden Power Fire"
+        ]
+    },
+    "6": {
+        "pid": 6,
+        "name": "Charizard",
+        "mainType": "Fire",
+        "secType": "Flying",
+        "baseHP": 78,
+        "baseAtt": 84,
+        "baseDef": 78,
+        "baseSpAtt": 109,
+        "baseSpDef": 85,
+        "baseSpe": 100,
+        "moveset": [
+            "Fire Blast",
+            "Focus Blast",
+            "Solar Beam",
+            "Roost"
+        ]
+    },
+    "9": {
+        "pid": 9,
+        "name": "Blastoise",
+        "mainType": "Water",
+        "secType": null,
+        "baseHP": 79,
+        "baseAtt": 83,
+        "baseDef": 100,
+        "baseSpAtt": 85,
+        "baseSpDef": 105,
+        "baseSpe": 78,
+        "moveset": [
+            "Rapid Spin",
+            "Dark Pulse",
+            "Aura Sphere",
+            "Ice Beam"
+        ]
+    },
+    "26": {
+        "pid": 26,
+        "name": "Raichu",
+        "mainType": "Electric",
+        "secType": null,
+        "baseHP": 60,
+        "baseAtt": 90,
+        "baseDef": 55,
+        "baseSpAtt": 90,
+        "baseSpDef": 80,
+        "baseSpe": 110,
+        "moveset": [
+            "Nasty Plot",
+            "Thunderbolt",
+            "Grass Knot",
+            "Focus Blast"
+        ]
+    },
+    "62": {
+        "pid": 62,
+        "name": "Poliwrath",
+        "mainType": "Water",
+        "secType": "Fighting",
+        "baseHP": 90,
+        "baseAtt": 95,
+        "baseDef": 95,
+        "baseSpAtt": 70,
+        "baseSpDef": 90,
+        "baseSpe": 70,
+        "moveset": [
+            "Scald",
+            "Focus Blast",
+            "Toxic",
+            "Ice Beam"
+        ]
+    },
+    "65": {
+        "pid": 65,
+        "name": "Alakazam",
+        "mainType": "Psychic",
+        "secType": null,
+        "baseHP": 55,
+        "baseAtt": 50,
+        "baseDef": 45,
+        "baseSpAtt": 135,
+        "baseSpDef": 95,
+        "baseSpe": 120,
+        "moveset": [
+            "Psychic",
+            "Focus Blast",
+            "Shadow Ball",
+            "Hidden Power Fire"
+        ]
+    },
+    "68": {
+        "pid": 68,
+        "name": "Machamp",
+        "mainType": "Fighting",
+        "secType": null,
+        "baseHP": 90,
+        "baseAtt": 130,
+        "baseDef": 80,
+        "baseSpAtt": 65,
+        "baseSpDef": 85,
+        "baseSpe": 55,
+        "moveset": [
+            "Close Combat",
+            "Knock Off",
+            "Facade",
+            "Bullet Punch"
+        ]
+    },
+    "76": {
+        "pid": 76,
+        "name": "Golem",
+        "mainType": "Rock",
+        "secType": "Ground",
+        "baseHP": 80,
+        "baseAtt": 120,
+        "baseDef": 130,
+        "baseSpAtt": 55,
+        "baseSpDef": 65,
+        "baseSpe": 45,
+        "moveset": [
+            "Stealth Rock",
+            "Earthquake",
+            "Stone Edge",
+            "Explosion"
+        ]
+    },
+    "78": {
+        "pid": 78,
+        "name": "Rapidash",
+        "mainType": "Fire",
+        "secType": null,
+        "baseHP": 65,
+        "baseAtt": 100,
+        "baseDef": 70,
+        "baseSpAtt": 80,
+        "baseSpDef": 80,
+        "baseSpe": 105,
+        "moveset": [
+            "Flare Blitz",
+            "Wild Charge",
+            "Will-O-Wisp",
+            "Morning Sun"
+        ]
+    },
+    "87": {
+        "pid": 87,
+        "name": "Dewgong",
+        "mainType": "Water",
+        "secType": "Ice",
+        "baseHP": 65,
+        "baseAtt": 100,
+        "baseDef": 70,
+        "baseSpAtt": 80,
+        "baseSpDef": 80,
+        "baseSpe": 105,
+        "moveset": [
+            "Whirlpool",
+            "Perish Song",
+            "Rain Dance",
+            "Rest"
+        ]
+    },
+    "91": {
+        "pid": 91,
+        "name": "Cloyster",
+        "mainType": "Water",
+        "secType": "Ice",
+        "baseHP": 50,
+        "baseAtt": 95,
+        "baseDef": 180,
+        "baseSpAtt": 85,
+        "baseSpDef": 45,
+        "baseSpe": 70,
+        "moveset": [
+            "Shell Smash",
+            "Icicle Spear",
+            "Spikes",
+            "Explosion"
+        ]
+    },
+    "94": {
+        "pid": 94,
+        "name": "Gengar",
+        "mainType": "Ghost",
+        "secType": "Poison",
+        "baseHP": 60,
+        "baseAtt": 65,
+        "baseDef": 60,
+        "baseSpAtt": 130,
+        "baseSpDef": 75,
+        "baseSpe": 110,
+        "moveset": [
+            "Shadow Ball",
+            "Sludge Bomb",
+            "Icy Wind",
+            "Thunder"
+        ]
+    },
+    "97": {
+        "pid": 97,
+        "name": "Hypno",
+        "mainType": "Psychic",
+        "secType": null,
+        "baseHP": 85,
+        "baseAtt": 73,
+        "baseDef": 70,
+        "baseSpAtt": 73,
+        "baseSpDef": 115,
+        "baseSpe": 67,
+        "moveset": [
+            "Hypnosis",
+            "Belly Drum",
+            "Zen Headbutt",
+            "Drain Punch"
+        ]
+    },
+    "112": {
+        "pid": 112,
+        "name": "Rhydon",
+        "mainType": "Earth",
+        "secType": "Rock",
+        "baseHP": 105,
+        "baseAtt": 130,
+        "baseDef": 120,
+        "baseSpAtt": 45,
+        "baseSpDef": 45,
+        "baseSpe": 40,
+        "moveset": [
+            "Stealth Rock",
+            "Earthquake",
+            "Stone Edge",
+            "Swords Dance"
+        ]
+    },
+    "¹13": {
+        "pid": 113,
+        "name": "Chansey",
+        "mainType": "Normal",
+        "secType": null,
+        "baseHP": 250,
+        "baseAtt": 5,
+        "baseDef": 5,
+        "baseSpAtt": 35,
+        "baseSpDef": 105,
+        "baseSpe": 50,
+        "moveset": [
+            "Seismic Toss",
+            "Toxic",
+            "Stealth Rock",
+            "Soft-Boiled"
+        ]
+    },
+    "115": {
+        "pid": 115,
+        "name": "Kangaskhan",
+        "mainType": "Normal",
+        "secType": null,
+        "baseHP": 85,
+        "baseAtt": 73,
+        "baseDef": 70,
+        "baseSpAtt": 73,
+        "baseSpDef": 115,
+        "baseSpe": 67,
+        "moveset": [
+            "Fake Out",
+            "Return",
+            "Crunch",
+            "Seismic Toss"
+        ]
+    },
+    "127": {
+        "pid": 127,
+        "name": "Pinsir",
+        "mainType": "Bug",
+        "secType": null,
+        "baseHP": 65,
+        "baseAtt": 125,
+        "baseDef": 100,
+        "baseSpAtt": 55,
+        "baseSpDef": 70,
+        "baseSpe": 85,
+        "moveset": [
+            "Swords Dance",
+            "Return",
+            "Close Combat",
+            "Quick Attack"
+        ]
+    },
+    "130": {
+        "pid": 130,
+        "name": "Gyarados",
+        "mainType": "Water",
+        "secType": "Flying",
+        "baseHP": 95,
+        "baseAtt": 125,
+        "baseDef": 79,
+        "baseSpAtt": 60,
+        "baseSpDef": 100,
+        "baseSpe": 81,
+        "moveset": [
+            "Substitute",
+            "Dragon Dance",
+            "Waterfall",
+            "Earthquake"
+        ]
+    },
+    "131": {
+        "pid": 131,
+        "name": "Lapras",
+        "mainType": "Agua",
+        "secType": "Ice",
+        "baseHP": 130,
+        "baseAtt": 85,
+        "baseDef": 80,
+        "baseSpAtt": 85,
+        "baseSpDef": 95,
+        "baseSpe": 60,
+        "moveset": [
+            "Freeze-Dry",
+            "Ice Beam",
+            "Hydro Pump",
+            "Surf"
+        ]
+    },
+    "134": {
+        "pid": 134,
+        "name": "Vaporeon",
+        "mainType": "Agua",
+        "secType": null,
+        "baseHP": 130,
+        "baseAtt": 64,
+        "baseDef": 60,
+        "baseSpAtt": 110,
+        "baseSpDef": 95,
+        "baseSpe": 65,
+        "moveset": [
+            "Wish",
+            "Scald",
+            "Protect",
+            "Heal Bell"
+        ]
+    },
+    "135": {
+        "pid": 135,
+        "name": "Jolteon",
+        "mainType": "Electric",
+        "secType": null,
+        "baseHP": 65,
+        "baseAtt": 65,
+        "baseDef": 60,
+        "baseSpAtt": 110,
+        "baseSpDef": 95,
+        "baseSpe": 130,
+        "moveset": [
+            "Substitute",
+            "Hidden Power Ice",
+            "Thunderbolt",
+            "Wish"
+        ]
+    },
+    "136": {
+        "pid": 136,
+        "name": "Flareon",
+        "mainType": "Fire",
+        "secType": null,
+        "baseHP": 65,
+        "baseAtt": 130,
+        "baseDef": 60,
+        "baseSpAtt": 95,
+        "baseSpDef": 110,
+        "baseSpe": 65,
+        "moveset": [
+            "Flare Blitz",
+            "Superpower",
+            "Quick Attack",
+            "Double Edge"
+        ]
+    },
+    "143": {
+        "pid": 143,
+        "name": "Snorlax",
+        "mainType": "Normal",
+        "secType": null,
+        "baseHP": 160,
+        "baseAtt": 110,
+        "baseDef": 65,
+        "baseSpAtt": 65,
+        "baseSpDef": 110,
+        "baseSpe": 30,
+        "moveset": [
+            "Curse",
+            "Earthquake",
+            "Rest",
+            "Sleep Talk"
+        ]
+    },
+    "144": {
+        "pid": 144,
+        "name": "Articuno",
+        "mainType": "Ice",
+        "secType": "Flying",
+        "baseHP": 90,
+        "baseAtt": 85,
+        "baseDef": 100,
+        "baseSpAtt": 95,
+        "baseSpDef": 125,
+        "baseSpe": 85,
+        "moveset": [
+            "Freeze-Dry",
+            "Roost",
+            "Hurricane",
+            "Ice Beam"
+        ]
+    },
+    "145": {
+        "pid": 145,
+        "name": "Zapdos",
+        "mainType": "Electric",
+        "secType": "Flying",
+        "baseHP": 90,
+        "baseAtt": 90,
+        "baseDef": 85,
+        "baseSpAtt": 125,
+        "baseSpDef": 90,
+        "baseSpe": 100,
+        "moveset": [
+            "Thunderbolt",
+            "Roost",
+            "Hidden Power Ice",
+            "Toxic"
+        ]
+    },
+    "146": {
+        "pid": 146,
+        "name": "Moltres",
+        "mainType": "Fire",
+        "secType": "Flying",
+        "baseHP": 90,
+        "baseAtt": 100,
+        "baseDef": 90,
+        "baseSpAtt": 125,
+        "baseSpDef": 85,
+        "baseSpe": 90,
+        "moveset": [
+            "Fire Blast",
+            "Hurricane",
+            "Will-O-Wisp",
+            "Roost"
+        ]
+    },
+    "149": {
+        "pid": 149,
+        "name": "Dragonite",
+        "mainType": "Dragon",
+        "secType": "Flying",
+        "baseHP": 91,
+        "baseAtt": 134,
+        "baseDef": 95,
+        "baseSpAtt": 100,
+        "baseSpDef": 100,
+        "baseSpe": 80,
+        "moveset": [
+            "Dragon Dance",
+            "Protect",
+            "Roost",
+            "Fly"
+        ]
+    },
+    "150": {
+        "pid": 150,
+        "name": "Mewtwo",
+        "mainType": "Psychic",
+        "secType": null,
+        "baseHP": 106,
+        "baseAtt": 110,
+        "baseDef": 90,
+        "baseSpAtt": 154,
+        "baseSpDef": 90,
+        "baseSpe": 130,
+        "moveset": [
+            "Psystrike",
+            "Focus Blast",
+            "Shadow Ball",
+            "Fire Blast"
+        ]
+    },
+    "151": {
+        "pid": 151,
+        "name": "Mew",
+        "mainType": "Psychic",
+        "secType": null,
+        "baseHP": 100,
+        "baseAtt": 100,
+        "baseDef": 100,
+        "baseSpAtt": 100,
+        "baseSpDef": 100,
+        "baseSpe": 100,
+        "moveset": [
+            "Taunt",
+            "Soft-Boiled",
+            "Will-O-Wisp",
+            "Psychic"
+        ]
+    }
+}
