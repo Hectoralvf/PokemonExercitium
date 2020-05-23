@@ -65,10 +65,10 @@
         "baseSpDef": 80,
         "baseSpe": 110,
         "moveset": [
-            "Nasty Plot",
-            "Thunderbolt",
-            "Grass Knot",
-            "Focus Blast"
+            "nasty_plot",
+            "thunderbolt",
+            "focus_blast",
+            "hidden_power_ice"
         ]
     },
     "62": {
@@ -83,9 +83,9 @@
         "baseSpDef": 90,
         "baseSpe": 70,
         "moveset": [
-            "Scald",
-            "Focus Blast",
-            "Toxic",
+            "scald",
+            "focus_blast",
+            "toxic",
             "Ice Beam"
         ]
     },
