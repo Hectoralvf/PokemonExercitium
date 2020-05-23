@@ -11,10 +11,10 @@
         "baseSpDef": 100,
         "baseSpe": 80,
         "moveset": [
-            "Growth",
-            "Giga Drain",
-            "Sludge Bomb",
-            "Hidden Power Fire"
+            "growth",
+            "giga_drain",
+            "sludge_bomb",
+            "hidden_power_fire"
         ]
     },
     "6": {
@@ -29,10 +29,10 @@
         "baseSpDef": 85,
         "baseSpe": 100,
         "moveset": [
-            "Fire Blast",
-            "Focus Blast",
-            "Solar Beam",
-            "Roost"
+            "fire_blast",
+            "focus_blast",
+            "solar_beam",
+            "roost"
         ]
     },
     "9": {
@@ -47,10 +47,10 @@
         "baseSpDef": 105,
         "baseSpe": 78,
         "moveset": [
-            "Rapid Spin",
-            "Dark Pulse",
-            "Aura Sphere",
-            "Ice Beam"
+            "rapid_spin",
+            "dark_pulse",
+            "aura_sphere",
+            "ice_beam"
         ]
     },
     "26": {
