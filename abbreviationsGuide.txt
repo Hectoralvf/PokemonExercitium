@@ -1,0 +1,56 @@
+stats: 
+  1: HP
+  2: Attack
+  3: Defense
+  4: Special Attack
+  5: Special Defense
+  6: Speed
+  7: Accuracy
+  8: Evasion
+
+Turns: (Example)
+  [2, 2]: 2 turns attack where actions happens in the second turn, after a charging turn.
+  [2, 1]: 2 turns attack where actions happens in the first turn, and has to rest another one after.
+
+HP recovery: (Example)
+  "hp_user": [0, 0.5]: user recieves 0.5 HP of the damage dealt (0)
+  "hp_user": [1, 0.5]: user recieves 0.5 HP of his max HP (1)
+  "hp_user": [2, 0.3]: user recieves 0.3 HP of the foe's max HP (2)
+
+status: 
+  1: Burn
+  2: Freeze
+  3: Paralysis
+  4: Poison
+  5: Badly Poisoned
+  6: Sleep
+  7: Binding Moves
+  8: Can't Scape
+  9: Confusion
+  10: Flinch
+  11: Embargo
+  12: Encore
+  13: Curse
+  14: Heal Block
+  15: Identified
+  16: Infatuation
+  17: Leech Seed
+  18: Nightmare
+  19: Perish Song
+  20: Taunt
+  21: Telekinesis
+  22: Torment
+  23: Aqua Ring
+  24: Bracing (Endure)
+  25: Charging
+  26: Center of attention
+  27: Defense Curl
+  28: Rooting
+  29: Magnetic Levitation
+  30: Minimize
+  31: Protection
+  32: Recharging
+  33: Semi-invulnerable
+  34: Substitute
+  35: Taking Aim
+  36: Withdrawing
