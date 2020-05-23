@@ -11,11 +11,14 @@ stats:
 Turns: (Example)
   [2, 2]: 2 turns attack where actions happens in the second turn, after a charging turn.
   [2, 1]: 2 turns attack where actions happens in the first turn, and has to rest another one after.
+  [0, 2, 5]: attacks 2 to 5 times randomly (0)
 
 HP recovery: (Example)
   "hp_user": [0, 0.5]: user recieves 0.5 HP of the damage dealt (0)
   "hp_user": [1, 0.5]: user recieves 0.5 HP of his max HP (1)
   "hp_user": [2, 0.3]: user recieves 0.3 HP of the foe's max HP (2)
+  "hp_user": [3, 120]: user recieves 120 HP (3)
+
 
 status: 
   1: Burn
@@ -54,3 +57,4 @@ status:
   34: Substitute
   35: Taking Aim
   36: Withdrawing
+  37: Hazards

@@ -1,0 +1,17 @@
+Ataques especiales: 
+  Facade
+  Earthquake - Dig
+  Stone Edge
+  Icicle Spear
+  Thunder
+  Seismic Toss (added power by hand)
+  Return (added power by hand)
+  Fake Out
+  Surf - Dive
+  Freeze Dry
+  Protect
+  Heal Bell
+  Curse
+  Sleep Talk
+  Hurricane
+  Psytrike
