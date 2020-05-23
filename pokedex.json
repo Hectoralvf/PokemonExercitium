@@ -2,8 +2,8 @@
     "3": {
         "pid": 3,
         "name": "Venusaur",
-        "mainType": "Grass",
-        "secType": "Poison",
+        "mainType": "grass",
+        "secType": "poison",
         "baseHP": 80,
         "baseAtt": 82,
         "baseDef": 83,
@@ -20,8 +20,8 @@
     "6": {
         "pid": 6,
         "name": "Charizard",
-        "mainType": "Fire",
-        "secType": "Flying",
+        "mainType": "fire",
+        "secType": "flying",
         "baseHP": 78,
         "baseAtt": 84,
         "baseDef": 78,
@@ -38,7 +38,7 @@
     "9": {
         "pid": 9,
         "name": "Blastoise",
-        "mainType": "Water",
+        "mainType": "water",
         "secType": null,
         "baseHP": 79,
         "baseAtt": 83,
@@ -56,7 +56,7 @@
     "26": {
         "pid": 26,
         "name": "Raichu",
-        "mainType": "Electric",
+        "mainType": "electric",
         "secType": null,
         "baseHP": 60,
         "baseAtt": 90,
@@ -74,8 +74,8 @@
     "62": {
         "pid": 62,
         "name": "Poliwrath",
-        "mainType": "Water",
-        "secType": "Fighting",
+        "mainType": "water",
+        "secType": "fighting",
         "baseHP": 90,
         "baseAtt": 95,
         "baseDef": 95,
@@ -86,13 +86,13 @@
             "scald",
             "focus_blast",
             "toxic",
-            "Ice Beam"
+            "ice_beam"
         ]
     },
     "65": {
         "pid": 65,
         "name": "Alakazam",
-        "mainType": "Psychic",
+        "mainType": "psychic",
         "secType": null,
         "baseHP": 55,
         "baseAtt": 50,
@@ -101,16 +101,16 @@
         "baseSpDef": 95,
         "baseSpe": 120,
         "moveset": [
-            "Psychic",
-            "Focus Blast",
-            "Shadow Ball",
-            "Hidden Power Fire"
+            "psychic_",
+            "focus_blast",
+            "shadow_ball",
+            "hidden_power_fire"
         ]
     },
     "68": {
         "pid": 68,
         "name": "Machamp",
-        "mainType": "Fighting",
+        "mainType": "fighting",
         "secType": null,
         "baseHP": 90,
         "baseAtt": 130,
@@ -119,17 +119,17 @@
         "baseSpDef": 85,
         "baseSpe": 55,
         "moveset": [
-            "Close Combat",
-            "Knock Off",
-            "Facade",
-            "Bullet Punch"
+            "close_combat",
+            "knock_off",
+            "facade",
+            "bullet_punch"
         ]
     },
     "76": {
         "pid": 76,
         "name": "Golem",
-        "mainType": "Rock",
-        "secType": "Ground",
+        "mainType": "rock",
+        "secType": "ground",
         "baseHP": 80,
         "baseAtt": 120,
         "baseDef": 130,
@@ -137,16 +137,16 @@
         "baseSpDef": 65,
         "baseSpe": 45,
         "moveset": [
-            "Stealth Rock",
-            "Earthquake",
-            "Stone Edge",
-            "Explosion"
+            "stealth_rock",
+            "earthquake",
+            "stone_edge",
+            "explosion"
         ]
     },
     "78": {
         "pid": 78,
         "name": "Rapidash",
-        "mainType": "Fire",
+        "mainType": "fire",
         "secType": null,
         "baseHP": 65,
         "baseAtt": 100,
@@ -155,35 +155,17 @@
         "baseSpDef": 80,
         "baseSpe": 105,
         "moveset": [
-            "Flare Blitz",
-            "Wild Charge",
-            "Will-O-Wisp",
-            "Morning Sun"
-        ]
-    },
-    "87": {
-        "pid": 87,
-        "name": "Dewgong",
-        "mainType": "Water",
-        "secType": "Ice",
-        "baseHP": 65,
-        "baseAtt": 100,
-        "baseDef": 70,
-        "baseSpAtt": 80,
-        "baseSpDef": 80,
-        "baseSpe": 105,
-        "moveset": [
-            "Whirlpool",
-            "Perish Song",
-            "Rain Dance",
-            "Rest"
+            "flare_blitz",
+            "wild_charge",
+            "will_o_wisp",
+            "morning_sun"
         ]
     },
     "91": {
         "pid": 91,
         "name": "Cloyster",
-        "mainType": "Water",
-        "secType": "Ice",
+        "mainType": "water",
+        "secType": "ice",
         "baseHP": 50,
         "baseAtt": 95,
         "baseDef": 180,
@@ -191,17 +173,17 @@
         "baseSpDef": 45,
         "baseSpe": 70,
         "moveset": [
-            "Shell Smash",
-            "Icicle Spear",
-            "Spikes",
-            "Explosion"
+            "shell_smash",
+            "icicle_spear",
+            "spikes",
+            "explosion"
         ]
     },
     "94": {
         "pid": 94,
         "name": "Gengar",
-        "mainType": "Ghost",
-        "secType": "Poison",
+        "mainType": "ghost",
+        "secType": "poison",
         "baseHP": 60,
         "baseAtt": 65,
         "baseDef": 60,
@@ -209,16 +191,16 @@
         "baseSpDef": 75,
         "baseSpe": 110,
         "moveset": [
-            "Shadow Ball",
-            "Sludge Bomb",
-            "Icy Wind",
-            "Thunder"
+            "shadow_ball",
+            "sludge_bomb",
+            "icy_wind",
+            "thunder"
         ]
     },
     "97": {
         "pid": 97,
         "name": "Hypno",
-        "mainType": "Psychic",
+        "mainType": "psychic",
         "secType": null,
         "baseHP": 85,
         "baseAtt": 73,
@@ -227,17 +209,17 @@
         "baseSpDef": 115,
         "baseSpe": 67,
         "moveset": [
-            "Hypnosis",
-            "Belly Drum",
-            "Zen Headbutt",
-            "Drain Punch"
+            "hypnosis",
+            "belly_drum",
+            "zen_headbutt",
+            "drain_punch"
         ]
     },
     "112": {
         "pid": 112,
         "name": "Rhydon",
-        "mainType": "Earth",
-        "secType": "Rock",
+        "mainType": "earth",
+        "secType": "rock",
         "baseHP": 105,
         "baseAtt": 130,
         "baseDef": 120,
@@ -245,16 +227,16 @@
         "baseSpDef": 45,
         "baseSpe": 40,
         "moveset": [
-            "Stealth Rock",
-            "Earthquake",
-            "Stone Edge",
-            "Swords Dance"
+            "stealth_rock",
+            "earthquake",
+            "stone_edge",
+            "swords_dance"
         ]
     },
     "¹13": {
         "pid": 113,
         "name": "Chansey",
-        "mainType": "Normal",
+        "mainType": "normal",
         "secType": null,
         "baseHP": 250,
         "baseAtt": 5,
@@ -263,16 +245,16 @@
         "baseSpDef": 105,
         "baseSpe": 50,
         "moveset": [
-            "Seismic Toss",
-            "Toxic",
-            "Stealth Rock",
-            "Soft-Boiled"
+            "seismic_toss",
+            "toxic",
+            "stealth_rock",
+            "soft_boiled"
         ]
     },
     "115": {
         "pid": 115,
         "name": "Kangaskhan",
-        "mainType": "Normal",
+        "mainType": "normal",
         "secType": null,
         "baseHP": 85,
         "baseAtt": 73,
@@ -281,16 +263,16 @@
         "baseSpDef": 115,
         "baseSpe": 67,
         "moveset": [
-            "Fake Out",
-            "Return",
-            "Crunch",
-            "Seismic Toss"
+            "fake_out",
+            "return",
+            "crunch",
+            "seismic_toss"
         ]
     },
     "127": {
         "pid": 127,
         "name": "Pinsir",
-        "mainType": "Bug",
+        "mainType": "bug",
         "secType": null,
         "baseHP": 65,
         "baseAtt": 125,
@@ -299,17 +281,17 @@
         "baseSpDef": 70,
         "baseSpe": 85,
         "moveset": [
-            "Swords Dance",
-            "Return",
-            "Close Combat",
-            "Quick Attack"
+            "swords_dance",
+            "return",
+            "close_combat",
+            "quick_attack"
         ]
     },
     "130": {
         "pid": 130,
         "name": "Gyarados",
-        "mainType": "Water",
-        "secType": "Flying",
+        "mainType": "water",
+        "secType": "flying",
         "baseHP": 95,
         "baseAtt": 125,
         "baseDef": 79,
@@ -317,17 +299,17 @@
         "baseSpDef": 100,
         "baseSpe": 81,
         "moveset": [
-            "Substitute",
-            "Dragon Dance",
-            "Waterfall",
-            "Earthquake"
+            "protect",
+            "dragon_dance",
+            "waterfall",
+            "earthquake"
         ]
     },
     "131": {
         "pid": 131,
         "name": "Lapras",
-        "mainType": "Agua",
-        "secType": "Ice",
+        "mainType": "water",
+        "secType": "ice",
         "baseHP": 130,
         "baseAtt": 85,
         "baseDef": 80,
@@ -335,16 +317,16 @@
         "baseSpDef": 95,
         "baseSpe": 60,
         "moveset": [
-            "Freeze-Dry",
-            "Ice Beam",
-            "Hydro Pump",
-            "Surf"
+            "freeze_dry",
+            "ice_beam",
+            "hydro_pump",
+            "surf"
         ]
     },
     "134": {
         "pid": 134,
         "name": "Vaporeon",
-        "mainType": "Agua",
+        "mainType": "water",
         "secType": null,
         "baseHP": 130,
         "baseAtt": 64,
@@ -353,16 +335,16 @@
         "baseSpDef": 95,
         "baseSpe": 65,
         "moveset": [
-            "Wish",
-            "Scald",
-            "Protect",
-            "Heal Bell"
+            "wish",
+            "scald",
+            "protect",
+            "heal_bell"
         ]
     },
     "135": {
         "pid": 135,
         "name": "Jolteon",
-        "mainType": "Electric",
+        "mainType": "electric",
         "secType": null,
         "baseHP": 65,
         "baseAtt": 65,
@@ -371,16 +353,16 @@
         "baseSpDef": 95,
         "baseSpe": 130,
         "moveset": [
-            "Substitute",
-            "Hidden Power Ice",
-            "Thunderbolt",
-            "Wish"
+            "protect",
+            "hidden_power_ice",
+            "thunderbolt",
+            "wish"
         ]
     },
     "136": {
         "pid": 136,
         "name": "Flareon",
-        "mainType": "Fire",
+        "mainType": "fire",
         "secType": null,
         "baseHP": 65,
         "baseAtt": 130,
@@ -389,16 +371,16 @@
         "baseSpDef": 110,
         "baseSpe": 65,
         "moveset": [
-            "Flare Blitz",
-            "Superpower",
-            "Quick Attack",
-            "Double Edge"
+            "flare_blitz",
+            "superpower",
+            "quick_attack",
+            "double_edge"
         ]
     },
     "143": {
         "pid": 143,
         "name": "Snorlax",
-        "mainType": "Normal",
+        "mainType": "normal",
         "secType": null,
         "baseHP": 160,
         "baseAtt": 110,
@@ -407,17 +389,17 @@
         "baseSpDef": 110,
         "baseSpe": 30,
         "moveset": [
-            "Curse",
-            "Earthquake",
-            "Rest",
-            "Sleep Talk"
+            "curse",
+            "earthquake",
+            "rest",
+            "sleep_talk"
         ]
     },
     "144": {
         "pid": 144,
         "name": "Articuno",
-        "mainType": "Ice",
-        "secType": "Flying",
+        "mainType": "ice",
+        "secType": "flying",
         "baseHP": 90,
         "baseAtt": 85,
         "baseDef": 100,
@@ -425,17 +407,17 @@
         "baseSpDef": 125,
         "baseSpe": 85,
         "moveset": [
-            "Freeze-Dry",
-            "Roost",
-            "Hurricane",
-            "Ice Beam"
+            "freeze_dry",
+            "roost",
+            "hurricane",
+            "ice_beam"
         ]
     },
     "145": {
         "pid": 145,
         "name": "Zapdos",
-        "mainType": "Electric",
-        "secType": "Flying",
+        "mainType": "electric",
+        "secType": "flying",
         "baseHP": 90,
         "baseAtt": 90,
         "baseDef": 85,
@@ -443,17 +425,17 @@
         "baseSpDef": 90,
         "baseSpe": 100,
         "moveset": [
-            "Thunderbolt",
-            "Roost",
-            "Hidden Power Ice",
-            "Toxic"
+            "thunderbolt",
+            "roost",
+            "hidden_power_ice",
+            "toxic"
         ]
     },
     "146": {
         "pid": 146,
         "name": "Moltres",
-        "mainType": "Fire",
-        "secType": "Flying",
+        "mainType": "fire",
+        "secType": "flying",
         "baseHP": 90,
         "baseAtt": 100,
         "baseDef": 90,
@@ -461,17 +443,17 @@
         "baseSpDef": 85,
         "baseSpe": 90,
         "moveset": [
-            "Fire Blast",
-            "Hurricane",
-            "Will-O-Wisp",
-            "Roost"
+            "fire_blast",
+            "hurricane",
+            "will_o_wisp",
+            "roost"
         ]
     },
     "149": {
         "pid": 149,
         "name": "Dragonite",
-        "mainType": "Dragon",
-        "secType": "Flying",
+        "mainType": "dragon",
+        "secType": "flying",
         "baseHP": 91,
         "baseAtt": 134,
         "baseDef": 95,
@@ -479,16 +461,16 @@
         "baseSpDef": 100,
         "baseSpe": 80,
         "moveset": [
-            "Dragon Dance",
-            "Protect",
-            "Roost",
-            "Fly"
+            "dragon_dance",
+            "protect",
+            "roost",
+            "fly"
         ]
     },
     "150": {
         "pid": 150,
         "name": "Mewtwo",
-        "mainType": "Psychic",
+        "mainType": "psychic",
         "secType": null,
         "baseHP": 106,
         "baseAtt": 110,
@@ -497,16 +479,16 @@
         "baseSpDef": 90,
         "baseSpe": 130,
         "moveset": [
-            "Psystrike",
-            "Focus Blast",
-            "Shadow Ball",
-            "Fire Blast"
+            "psystrike",
+            "focus_blast",
+            "shadow_ball",
+            "fire_blast"
         ]
     },
     "151": {
         "pid": 151,
         "name": "Mew",
-        "mainType": "Psychic",
+        "mainType": "psychic",
         "secType": null,
         "baseHP": 100,
         "baseAtt": 100,
@@ -515,10 +497,10 @@
         "baseSpDef": 100,
         "baseSpe": 100,
         "moveset": [
-            "Taunt",
-            "Soft-Boiled",
-            "Will-O-Wisp",
-            "Psychic"
+            "taunt",
+            "soft_boiled",
+            "will_o_wisp",
+            "psychic_"
         ]
     }
 }
