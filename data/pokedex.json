@@ -218,7 +218,7 @@
     "112": {
         "pid": 112,
         "name": "Rhydon",
-        "mainType": "earth",
+        "mainType": "ground",
         "secType": "rock",
         "baseHP": 105,
         "baseAtt": 130,
