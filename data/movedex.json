@@ -425,7 +425,7 @@
     },
     "stealth_rock": {
         "name": "Stealth Rock",
-        "type": "Rock",
+        "type": "rock",
         "category": "Non-Damaging",
         "turns": null,
         "power": null,
@@ -621,7 +621,7 @@
     },
     "icy_wind": {
         "name": "Icy Wind",
-        "type": "Ice",
+        "type": "ice",
         "category": "Special",
         "turns": null,
         "power": 55,
@@ -841,7 +841,7 @@
     },
     "surf": {
         "name": "Surf",
-        "type": "Water",
+        "type": "water",
         "category": "Special",
         "turns": null,
         "power": 90,
@@ -1009,7 +1009,7 @@
         "category": "Physical",
         "turns": null,
         "power": 120,
-        "accuracy": 100,
+        "accuracy": 1.0,
         "priority": 0,
         "pps": 5,
         "stats_user": {
@@ -1029,7 +1029,7 @@
         "category": "Physical",
         "turns": null,
         "power": 120,
-        "accuracy": 100,
+        "accuracy": 1.0,
         "priority": 0,
         "pps": 15,
         "stats_user": null,
@@ -1164,6 +1164,7 @@
         "stats_foe": null,
         "status_user": null,
         "status_foe": null,
+        "hp_user": null,
         "hp_foe": null
     },
     "taunt": {
@@ -1173,6 +1174,26 @@
         "turns": null,
         "power": null,
         "accuracy": 1.0,
+        "priority": 0,
+        "pps": 20,
+        "stats_user": null,
+        "stats_foe": null,
+        "status_user": null,
+        "status_foe": {
+            "affected": [20],
+            "turns": [3],
+            "probability": [1.0]
+        },
+        "hp_user": null,
+        "hp_foe": null
+    },
+    "fly": {
+        "name": "Fly",
+        "type": "flying",
+        "category": "Physical",
+        "turns": [2, 2],
+        "power": 90,
+        "accuracy": 0.95,
         "priority": 0,
         "pps": 20,
         "stats_user": null,
