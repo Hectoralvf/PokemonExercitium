@@ -1,5 +1,6 @@
 import pygame
 import json
+import random
 
 
 class Move():
@@ -49,7 +50,6 @@ class Pokemon():
         with open("data/pokedex.json") as f_pokedex:
             dic_pokedex = json.load(f_pokedex)
             self.p_id = dic_pokedex[pid]['pid']
-            self.ko = False
             self.name = dic_pokedex[pid]['name']
             self.main_type = dic_pokedex[pid]['mainType']
             self.sec_type = dic_pokedex[pid]['secType']
@@ -64,22 +64,24 @@ class Pokemon():
             self.SP_ATT = ((dic_pokedex[pid]['baseSpAtt']*2 + 31 + 21) + 5)  #omitted level because every pokemon is lvl100 and omited nature for the sake of simplicity
             self.SP_DEF = ((dic_pokedex[pid]['baseSpDef']*2 + 31 + 21) + 5)  #omitted level because every pokemon is lvl100 and omited nature for the sake of simplicity
             self.SPEED = ((dic_pokedex[pid]['baseSpe']*2 + 31 + 21) + 5)  #omitted level because every pokemon is lvl100 and omited nature for the sake of simplicity
-            self.current_hp = self.HP
-            self.current_att = self.ATT
-            self.current_def = self.DEF_
-            self.current_sp_att = self.SP_ATT
-            self.current_sp_def = self.SP_DEF
-            self.current_speed = self.SPEED
-            self.stage_att = 0
-            self.stage_def = 0
-            self.stage_sp_att = 0
-            self.stage_sp_def = 0
-            self.stage_speed = 0
-            self.accuracy = 1.0
-            self.evasion = 1.0
-            self.stage_accuracy = 0
-            self.stage_evasion = 0
-            self.status_list = []
+        self.ko = False
+        self.current_hp = self.HP
+        self.current_att = self.ATT
+        self.current_def = self.DEF_
+        self.current_sp_att = self.SP_ATT
+        self.current_sp_def = self.SP_DEF
+        self.current_speed = self.SPEED
+        self.stage_att = 0
+        self.stage_def = 0
+        self.stage_sp_att = 0
+        self.stage_sp_def = 0
+        self.stage_speed = 0
+        self.accuracy = 1.0
+        self.evasion = 1.0
+        self.stage_accuracy = 0
+        self.stage_evasion = 0
+        self.status_list = []
+        self.status_turns = []
 
     def __str__(self):
         return """#{}: {}
@@ -96,10 +98,24 @@ Speed: {}/{}  {}
 Accu: {}  {}
 Eva: {}  {}
 
-States: {}
+Status: {}
+Turns:  {}
 
 Moves: {}
-""".format(self.p_id, self.name, self.ko, self.main_type, self.sec_type, self.current_hp, self.HP, self.current_att, self.ATT, self.stage_att, self.current_def, self.DEF_, self.stage_def, self.current_sp_att, self.SP_ATT, self.stage_sp_att, self.current_sp_def, self.SP_DEF, self.stage_sp_def, self.current_speed, self.SPEED, self.stage_speed, self.accuracy, self.stage_accuracy, self.evasion, self.stage_evasion, self.status_list, self.moveset)
+""".format(self.p_id, self.name, self.ko, self.main_type, self.sec_type, self.current_hp, self.HP, self.current_att, self.ATT, self.stage_att, self.current_def, self.DEF_, self.stage_def, self.current_sp_att, self.SP_ATT, self.stage_sp_att, self.current_sp_def, self.SP_DEF, self.stage_sp_def, self.current_speed, self.SPEED, self.stage_speed, self.accuracy, self.stage_accuracy, self.evasion, self.stage_evasion, self.status_list, self.status_turns, self.moveset)
+
+class Battle():
+    team_user = []
+    team_foe = []
+
+    def __init__(self, chosen_pokemon):
+        list_pokemons = [3, 6, 9, 26, 62, 65, 68, 76, 78, 91, 94, 97, 112, 113, 115, 127, 130, 131, 134, 135, 136, 143, 144, 145, 146, 149, 150, 151]
+        list_user = chosen_pokemon
+        num_pokemons = len(list_user)
+        list_foe = random.sample(list_pokemons, num_pokemons)
+        for i in range(num_pokemons):
+            Battle.team_user.append(Pokemon(str(list_user[i])))
+            Battle.team_foe.append(Pokemon(str(list_foe[i])))
 
 
 endCombat = False
@@ -107,9 +123,9 @@ endCombat = False
 def buildTeams():
     pass
 
-test = Pokemon('3')
+test = Battle([3,6,9,150])
 
-print(test.__str__())
+# print(test.__str__())
 # print(test.moveset[0].__str__())
 # test.moveset[0].spendPP()
 # print(test.moveset[0].__str__())
