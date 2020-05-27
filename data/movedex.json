@@ -56,7 +56,7 @@
         "hp_foe": null
     },
     "hidden_power_fire": {
-        "name": "Hidden Power Fire",
+        "name": "Hidden Power",
         "type": "fire",
         "category": "Special",
         "turns": null,
@@ -260,7 +260,7 @@
         "hp_foe": null
     },
     "hidden_power_ice": {
-        "name": "Hidden Power Ice",
+        "name": "Hidden Power",
         "type": "ice",
         "category": "Special",
         "turns": null,
