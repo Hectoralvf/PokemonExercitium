@@ -1,11 +1,14 @@
 import pygame
 import json
 import random
+import os
 
 
 class Move():
     def __init__(self, move_id): 
-        with open("data/movedex.json") as f_movedex:
+        dir_py = os.path.dirname(__file__)
+        rel_path = 'data/movedex.json'
+        with open(os.path.join(dir_py, rel_path), 'r') as f_movedex:
             dic_movedex = json.load(f_movedex)
             self.moveID = move_id
             self.name = dic_movedex[move_id]['name']
@@ -47,7 +50,9 @@ class Move():
 
 class Pokemon():
     def __init__(self, pid):
-        with open("data/pokedex.json") as f_pokedex:
+        dir_py = os.path.dirname(__file__)
+        rel_path = 'data/pokedex.json'
+        with open(os.path.join(dir_py, rel_path), 'r') as f_pokedex:
             dic_pokedex = json.load(f_pokedex)
             self.p_id = dic_pokedex[pid]['pid']
             self.name = dic_pokedex[pid]['name']
@@ -632,7 +637,9 @@ def Battle(chosen_pokemon):
     attack_output: list
     types_table: dict
     hazards: list = []
-    with open('data/types.json', 'r') as f_types:
+    dir_py = os.path.dirname(__file__)
+    rel_path = 'data/types.json'
+    with open(os.path.join(dir_py, rel_path), 'r') as f_types:
         types_table = json.load(f_types)
 
     team_user = build_team_user(team_user, chosen_pokemon)
