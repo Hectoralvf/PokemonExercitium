@@ -198,6 +198,10 @@ def Attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
     elif team_user[active_user].moveset[attack_user].priority > team_foe[active_foe].moveset[attack_foe].priority: 
         return (0, 1, attack_user, attack_foe)
     elif team_user[active_user].moveset[attack_user].priority == team_foe[active_foe].moveset[attack_foe].priority: 
+        if 3 in team_user[active_user].status_list:
+            team_user[active_user].current_speed = team_user[active_user].current_speed*0.5
+        if 3 in team_foe[active_foe].status_list:
+            team_foe[active_foe].current_speed = team_foe[active_foe].current_speed*0.5
         if team_user[active_user].current_speed > team_foe[active_foe].current_speed: 
             return (0, 1, attack_user, attack_foe)
         elif team_user[active_user].current_speed < team_foe[active_foe].current_speed: 
@@ -209,31 +213,59 @@ def Attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
             else: return (0, 1, attack_user, attack_foe)
 
 def Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
-    damage: float = 0.0
+    damage: int = 0
     list_types: list = ["bug", "dark", "dragon", "electric", "fairy", "fighting","fire","flying","ghost","grass","ground","ice","normal","poison","psychic","rock","steel","water"]
     type_: str = ''
 
-    if team_user[active_user].moveset[attacks[0]].power != None: 
-        if team_user[active_user].moveset[attacks[0]].category == 'Physical': 
-            damage = (40 * team_user[active_user].moveset[attacks[0]].power * team_user[active_user].current_att/team_foe[active_foe].current_def)/50 + 2
-        elif team_user[active_user].moveset[attacks[0]].category == 'Special':
-            damage = (40 * team_user[active_user].moveset[attacks[0]].power * team_user[active_user].current_sp_att/team_foe[active_foe].current_sp_def)/50 + 2
-        if random.random() < 0.08:
-            damage = damage*2
-        damage = round(damage*(1 - (random.random()/4)))
-        if team_user[active_user].moveset[attacks[0]].type == team_user[active_user].main_type:
-            damage = damage*1.5
-        elif team_user[active_user].sec_type != None:
-            if team_user[active_user].moveset[attacks[0]].type == team_user[active_user].sec_type:
+    if attacker == 0: 
+        if team_user[active_user].moveset[attacks[attacker]].power != None: 
+            if team_user[active_user].moveset[attacks[attacker]].category == 'Physical': 
+                damage = (40 * team_user[active_user].moveset[attacks[attacker]].power * team_user[active_user].current_att/team_foe[active_foe].current_def)/50 + 2
+            elif team_user[active_user].moveset[attacks[attacker]].category == 'Special':
+                damage = (40 * team_user[active_user].moveset[attacks[attacker]].power * team_user[active_user].current_sp_att/team_foe[active_foe].current_sp_def)/50 + 2
+            if random.random() < 0.08:
+                damage = damage*2
+            damage = round(damage*(1 - (random.random()/4)))
+            if team_user[active_user].moveset[attacks[attacker]].type == team_user[active_user].main_type:
                 damage = damage*1.5
-        type_ = '' + team_user[active_user].moveset[attacks[0]].type + '_against'
-        damage = damage*types_table[type_][list_types.index(team_foe[active_foe].main_type)]
-        if team_foe[active_foe].sec_type != None:
-            damage = damage*types_table[type_][list_types.index(team_foe[active_foe].sec_type)]
-        damage = int(round(damage))
-        team_foe[active_foe].current_hp -= damage
-        if team_foe[active_foe].current_hp < 0: 
-            team_foe[active_foe].current_hp = 0
+            elif team_user[active_user].sec_type != None:
+                if team_user[active_user].moveset[attacks[attacker]].type == team_user[active_user].sec_type:
+                    damage = damage*1.5
+            type_ = '' + team_user[active_user].moveset[attacks[attacker]].type + '_against'
+            damage = damage*types_table[type_][list_types.index(team_foe[active_foe].main_type)]
+            if team_foe[active_foe].sec_type != None:
+                damage = damage*types_table[type_][list_types.index(team_foe[active_foe].sec_type)]
+            if 1 in team_user[active_user].status_list:
+                damage = damage*0.5
+            damage = int(round(damage))
+            team_foe[active_foe].current_hp -= damage
+            if team_foe[active_foe].current_hp < 0: 
+                team_foe[active_foe].current_hp = 0
+    if attacker == 1: 
+        if team_foe[active_foe].moveset[attacks[attacker]].power != None: 
+            if team_foe[active_foe].moveset[attacks[attacker]].category == 'Physical': 
+                damage = (40 * team_foe[active_foe].moveset[attacks[attacker]].power * team_foe[active_foe].current_att/team_user[active_user].current_def)/50 + 2
+            elif team_foe[active_foe].moveset[attacks[attacker]].category == 'Special':
+                damage = (40 * team_foe[active_foe].moveset[attacks[attacker]].power * team_foe[active_foe].current_sp_att/team_user[active_user].current_sp_def)/50 + 2
+            if random.random() < 0.08:
+                damage = damage*2
+            damage = round(damage*(1 - (random.random()/4)))
+            if team_foe[active_foe].moveset[attacks[attacker]].type == team_foe[active_foe].main_type:
+                damage = damage*1.5
+            if team_foe[active_foe].sec_type != None:
+                if team_foe[active_foe].moveset[attacks[attacker]].type == team_foe[active_foe].sec_type:
+                    damage = damage*1.5
+            type_ = '' + team_foe[active_foe].moveset[attacks[attacker]].type + '_against'
+            damage = damage*types_table[type_][list_types.index(team_user[active_user].main_type)]
+            if team_user[active_user].sec_type != None:
+                damage = damage*types_table[type_][list_types.index(team_user[active_user].sec_type)]
+            if 1 in team_user[active_user].status_list:
+                damage = damage*0.5
+            damage = int(round(damage))
+            team_user[active_user].current_hp -= damage
+            if team_user[active_user].current_hp < 0: 
+                team_user[active_user].current_hp = 0
+        
     return [team_user, team_foe, damage]
 
 def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks):
@@ -245,7 +277,9 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                 if random.random() <= team_user[active_user].moveset[attacks[attacker]].status_user['probability'][i]:
                     if team_user[active_user].moveset[attacks[attacker]].status_user['affected'][i] not in team_user[active_user].status_list:
                         team_user[active_user].status_list.append(team_user[active_user].moveset[attacks[attacker]].status_user['affected'][i])
-                        team_user[active_user].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_user['turns'][i])
+                        if team_user[active_user].moveset[attacks[attacker]].status_user['turns'] != None:
+                            team_user[active_user].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_user['turns'][i])
+                        else: team_user[active_user].status_turns.append(random.randint(2,5))
                 print(team_user[active_user].status_list)
                 i += 1
         if team_user[active_user].moveset[attacks[attacker]].status_foe != None:
@@ -254,7 +288,9 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                 if random.random() <= team_user[active_user].moveset[attacks[attacker]].status_foe['probability'][i]:
                     if team_user[active_user].moveset[attacks[attacker]].status_foe['affected'][i] not in team_foe[active_foe].status_list:
                         team_foe[active_foe].status_list.append(team_user[active_user].moveset[attacks[attacker]].status_user['affected'][i])
-                        team_foe[active_foe].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_user['turns'][i])
+                        if team_user[active_user].moveset[attacks[attacker]].status_user['turns'] != None:
+                            team_foe[active_foe].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_user['turns'][i])
+                        else: team_user[active_user].status_turns.append(random.randint(2,5))
                 print(team_foe[active_foe].status_list)
                 i += 1
     if attacker == 1:
@@ -264,7 +300,9 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                 if random.random() <= team_foe[active_foe].moveset[attacks[attacker]].status_user['probability'][i]:
                     if team_foe[active_foe].moveset[attacks[attacker]].status_user['affected'][i] not in team_foe[active_foe].status_list:
                         team_foe[active_foe].status_list.append(team_foe[active_foe].moveset[attacks[attacker]].status_user['affected'][i])
-                        team_foe[active_foe].status_turns.append(team_foe[active_foe].moveset[attacks[attacker]].status_user['turns'][i])
+                        if team_foe[active_foe].moveset[attacks[attacker]].status_user['turns'] != None: 
+                            team_foe[active_foe].status_turns.append(team_foe[active_foe].moveset[attacks[attacker]].status_user['turns'][i])
+                        else: team_foe[active_foe].status_turns.append(random.randint(2,5))
                 print(team_foe[active_foe].status_list)
                 i += 1
         if team_foe[active_foe].moveset[attacks[attacker]].status_foe != None:
@@ -273,7 +311,9 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                 if random.random() <= team_foe[active_foe].moveset[attacks[attacker]].status_foe['probability'][i]:
                     if team_foe[active_foe].moveset[attacks[attacker]].status_foe['affected'][i] not in team_user[active_user].status_list:
                         team_user[active_user].status_list.append(team_foe[active_foe].moveset[attacks[attacker]].status_foe['affected'][i])
-                        team_user[active_user].status_turns.append(team_foe[active_foe].moveset[attacks[attacker]].status_foe['turns'][i])
+                        if team_foe[active_foe].moveset[attacks[attacker]].status_foe['turns'] != None:
+                            team_user[active_user].status_turns.append(team_foe[active_foe].moveset[attacks[attacker]].status_foe['turns'][i])
+                        else: team_user[active_user].status_turns.append(random.randint(2,5))
                 print(team_user[active_user].status_list)
                 i += 1
     return [team_user, team_foe]
@@ -287,18 +327,46 @@ def Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks
                 if random.random() <= team_user[active_user].moveset[attacks[attacker]].stats_user['probability'][i]:
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 2:
                         team_user[active_user].stage_att += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_att > 6:
+                            team_user[active_user].stage_att = 6
+                        elif team_user[active_user].stage_att < -6:
+                            team_user[active_user].stage_att = -6
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 3:
                         team_user[active_user].stage_def += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_def > 6:
+                            team_user[active_user].stage_def = 6
+                        elif team_user[active_user].stage_def < -6:
+                            team_user[active_user].stage_def = -6
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 4:
                         team_user[active_user].stage_sp_att += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_sp_att > 6:
+                            team_user[active_user].stage_sp_att = 6
+                        elif team_user[active_user].stage_sp_att < -6:
+                            team_user[active_user].stage_sp_att = -6
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 5:
                         team_user[active_user].stage_sp_def += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_sp_def > 6:
+                            team_user[active_user].stage_sp_def = 6
+                        elif team_user[active_user].stage_sp_def < -6:
+                            team_user[active_user].stage_sp_def = -6
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 6:
                         team_user[active_user].stage_speed += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_speed > 6:
+                            team_user[active_user].stage_speed = 6
+                        elif team_user[active_user].stage_speed < -6:
+                            team_user[active_user].stage_speed = -6
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 7:
                         team_user[active_user].stage_accuracy += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_accuracy > 6:
+                            team_user[active_user].stage_accuracy = 6
+                        elif team_user[active_user].stage_accuracy < -6:
+                            team_user[active_user].stage_accuracy = -6
                     if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 8:
                         team_user[active_user].stage_evasion += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
+                        if team_user[active_user].stage_evasion > 6:
+                            team_user[active_user].stage_evasion = 6
+                        elif team_user[active_user].stage_evasion < -6:
+                            team_user[active_user].stage_evasion = -6
                 i += 1
         print(team_user[active_user].stage_att)
         if team_user[active_user].moveset[attacks[attacker]].stats_foe != None:
@@ -325,7 +393,7 @@ def Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks
         if team_foe[active_foe].moveset[attacks[1]].stats_user != None:
             i = 0
             while i < len(team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected']): 
-                if random.random() <= team_user[active_user].moveset[attacks[attacker]].stats_user['probability'][i]:
+                if random.random() <= team_foe[active_foe].moveset[attacks[attacker]].stats_user['probability'][i]:
                     if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 2:
                         team_foe[active_foe].stage_att += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
                     if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 3:
@@ -345,7 +413,7 @@ def Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks
         if team_foe[active_foe].moveset[attacks[attacker]].stats_foe != None:
             i = 0
             while i < len(team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected']): 
-                if random.random() <= team_user[active_user].moveset[attacks[attacker]].stats_foe['probability'][i]:
+                if random.random() <= team_foe[active_foe].moveset[attacks[attacker]].stats_foe['probability'][i]:
                     if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 2:
                         team_user[active_user].stage_att += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
                     if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 3:
@@ -415,44 +483,138 @@ def Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, d
         team_user[active_user].current_hp = 0
     return [team_user, team_foe]
 
+def Status_effect(team, active):
+    i: int = 0
+    burnt: bool = False
+    poisoned: bool = False
+    apply_hazard: bool = False
+
+    if team[active].status_list != None:
+        while i < len(team[active].status_turns):
+            if team[active].status_turns[i] == 0: 
+                team[active].status_turns[i].pop(i)
+            else: i += 1
+        i = 0
+        while i < len(team[active].status_list):
+            if team[active].status_list[i] == 1: 
+                team[active].current_hp -= team[active].HP/8
+                burnt = True
+            elif team[active].status_list[i] == 4:
+                team[active].current_hp -= team[active].HP/8
+                poisoned = True
+            elif team[active].status_list[i] == 5:
+                team[active].current_hp -= team[active].HP/6
+                poisoned = True
+            elif team[active].status_list[i] == 37:
+                apply_hazard = True
+                
+            team[active].status_turns[i] -= 1
+    return [team, burnt, poisoned, apply_hazard]
+
 def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     attack_functions_output: list
     damage_dealt: int = 0
     failed = None
 
     if attacker == 0:
-        if team_user[active_user].moveset[attacks[0]].accuracy != None:
-            if random.random() < (team_user[active_user].moveset[attacks[0]].accuracy*team_user[active_user].accuracy*team_foe[active_foe].accuracy):
-                failed = False
-                attack_functions_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-                team_user = attack_functions_output[0]
-                team_foe = attack_functions_output[1]
-                damage_dealt = attack_functions_output[2]
-                attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                team_user = attack_functions_output[0]
-                team_foe = attack_functions_output[1]
-                attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                team_user = attack_functions_output[0]
-                team_foe = attack_functions_output[1]
-                attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
-                team_user = attack_functions_output[0]
-                team_foe = attack_functions_output[1]
-            else: failed = True
-        else:
-            attack_power_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-            team_user = attack_power_output[0]
-            team_foe = attack_power_output[1]
-            attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
-            team_user = attack_functions_output[0]
-            team_foe = attack_functions_output[1]
-            attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
-            team_user = attack_functions_output[0]
-            team_foe = attack_functions_output[1]
-            attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
-            team_user = attack_functions_output[0]
-            team_foe = attack_functions_output[1]
-        
-        team_user[active_user].moveset[attacks[0]].spendPP()
+        if 10 not in team_user[active_user].status_list:
+            if 31 not in team_foe[active_foe].status_list:
+                if (9 in team_user[active_user].status_list) and (random.random() < 0.33):
+                    team_user[active_user].current_hp -= (40 * 40 * team_user[active_user].current_att/team_user[active_user].current_def)/50 + 2
+                else:
+                    if team_user[active_user].moveset[attacks[attacker]].accuracy != None:
+                        if random.random() < (team_user[active_user].moveset[attacks[attacker]].accuracy*team_user[active_user].accuracy*team_foe[active_foe].accuracy):
+                            failed = False
+                            attack_functions_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                            damage_dealt = attack_functions_output[2]
+                            if 20 in team_user[active_user].status_list:
+                                taunted = True
+                                print('taunted')
+                            else: 
+                                attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                                team_user = attack_functions_output[0]
+                                team_foe = attack_functions_output[1]
+                            attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                            attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                        else: failed = True
+                    else:
+                        attack_power_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        team_user = attack_power_output[0]
+                        team_foe = attack_power_output[1]
+                        if 20 in team_user[active_user].status_list:
+                            taunted = True
+                            print('taunted')
+                        else: 
+                            attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                        attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        team_user = attack_functions_output[0]
+                        team_foe = attack_functions_output[1]
+                        attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                        team_user = attack_functions_output[0]
+                        team_foe = attack_functions_output[1]
+            else: print(team_foe[active_foe].name + ' is protecting himself')
+        else: print(team_user[active_user].name + ' flinched!')
+        team_user[active_user].moveset[attacks[attacker]].spendPP()
+    if attacker == 1:
+        print('+++')
+        if 10 not in team_foe[active_foe].status_list:
+            if 31 not in team_user[active_user].status_list:
+                if (9 in team_foe[active_foe].status_list) and (random.random() < 0.33):
+                    team_foe[active_foe].current_hp -= (40 * 40 * team_foe[active_foe].current_att/team_foe[active_foe].current_def)/50 + 2
+                else:
+                    if team_foe[active_foe].moveset[attacks[attacker]].accuracy != None:
+                        if random.random() < (team_foe[active_foe].moveset[attacks[attacker]].accuracy*team_foe[active_foe].accuracy*team_user[active_user].accuracy):
+                            failed = False
+                            print('++++'+str(team_user[active_user].current_hp))
+                            attack_functions_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                            damage_dealt = attack_functions_output[2]
+                            print('++++'+str(damage_dealt)+str(team_user[active_user].current_hp))
+                            if 20 in team_foe[active_foe].status_list:
+                                taunted = True
+                                print('taunted')
+                            else: 
+                                attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                                team_user = attack_functions_output[0]
+                                team_foe = attack_functions_output[1]
+                            attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                            attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                        else: 
+                            failed = True
+                            print('failed')
+                    else:
+                        attack_power_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        team_user = attack_power_output[0]
+                        team_foe = attack_power_output[1]
+                        if 20 in team_foe[active_foe].status_list:
+                            taunted = True
+                            print('taunted')
+                        else: 
+                            attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            team_user = attack_functions_output[0]
+                            team_foe = attack_functions_output[1]
+                        attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        team_user = attack_functions_output[0]
+                        team_foe = attack_functions_output[1]
+                        attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                        team_user = attack_functions_output[0]
+                        team_foe = attack_functions_output[1]
+            else: print(team_user[active_user].name + ' is protecting himself')
+        else: print(team_foe[active_foe].name + ' flinched!')
+        team_foe[active_foe].moveset[attacks[attacker]].spendPP()
     return [team_user, team_foe, failed]
 
 def Battle(chosen_pokemon):
@@ -464,13 +626,14 @@ def Battle(chosen_pokemon):
     active_foe: int = 0
     battle_status: int = 0  #0 menu, 1  moves, 2  team, 3  exit
     menu_choice: int = 0
+    attacking_order: list
     attacking_output: tuple
-    attacking_order: tuple
+    attacks: list
     attack_output: list
     types_table: dict
+    hazards: list = []
     with open('data/types.json', 'r') as f_types:
         types_table = json.load(f_types)
-    print(type(types_table['list']))
 
     team_user = build_team_user(team_user, chosen_pokemon)
     team_foe = build_team_foe(team_foe, chosen_pokemon)
@@ -488,8 +651,9 @@ def Battle(chosen_pokemon):
                 battle_status = 0
                 if menu_choice != -1:
                     attacking_output = Attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-                    attacking_order = (attacking_output[0], attacking_output[1])
-                    attacks = (attacking_output[2], attacking_output[3])
+                    attacking_order = [attacking_output[0], attacking_output[1]]
+                    print('++'+str(attacking_output)+'++')
+                    attacks = [attacking_output[2], attacking_output[3]]
                     for attacker in attacking_order:
                         attack_output = Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
                         team_user = attack_output[0]
@@ -514,5 +678,5 @@ def Battle(chosen_pokemon):
 
         
             
-Battle([91,6,9,150])
+Battle([76,6,9,150])
 
