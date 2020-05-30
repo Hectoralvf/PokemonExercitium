@@ -15,3 +15,6 @@ Ataques especiales:
   Sleep Talk
   Hurricane
   Psytrike
+
+Implementación: 
+  si no quedan pps no entra en spendPP
