@@ -154,11 +154,7 @@
         "pps": 40,
         "stats_user": null,
         "stats_foe": null,
-        "status_user": {
-            "affected": [17, 7],
-            "turns": [0, 0],
-            "probability": [1.0, 1.0]
-        },
+        "status_user": null,
         "status_foe": null,
         "hp_user": null,
         "hp_foe": null
@@ -437,7 +433,7 @@
         "status_user": null,
         "status_foe": {
             "affected": [37],
-            "turns": [-1],
+            "turns": [1],
             "probability": [1.0]
         },
         "hp_user": null,
@@ -613,7 +609,7 @@
         "status_user": null,
         "status_foe": {
             "affected": [37],
-            "turns": [-1],
+            "turns": [1],
             "probability": [1.0]
         },
         "hp_user": null,
@@ -1069,7 +1065,7 @@
         "status_user": null,
         "status_foe": {
             "affected": [37],
-            "turns": [-1],
+            "turns": [1],
             "probability": [1.0]
         },
         "hp_user": [1, -0.5],
