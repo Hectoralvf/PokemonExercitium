@@ -1,7 +1,13 @@
-import pygame
+import os
+import sys
+
 import json
 import random
-import os
+import pygame
+
+from pygame.locals import *
+
+SCREEN_FILL: (253, 253, 253)
 
 class Move():
     def __init__(self, move_id): 
@@ -538,3 +544,34 @@ def Battle(chosen_pokemon):
                 battle_status = 0
 
         else: endCombat = True
+
+def main():
+    pygame.init()
+    pygame.display.set_caption("Pokémon Exercitium")
+    screen = pygame.display.set_mode((1366, 768))
+    dir_py = os.path.dirname(__file__)
+    menu_bg_rel_path = os.path.join(dir_py, 'images/menu_bg.png')
+    menu_bg_path = pygame.image.load(str(menu_bg_rel_path))
+
+   # Bucle principal
+    while True:
+
+      # 1.- Debúxase a pantalla
+        screen.fill((253, 253, 253))
+        #fonte = pygame.font.Font(None, 20)
+        #texto = fonte.render("Hello World!", True, (25, 25, 25))
+        screen.blit(menu_bg_path, [0, 0])
+        
+
+      # 2.- Compróbanse os eventos
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+
+      # 3.- Actualízase a pantalla
+        pygame.display.update()
+    
+
+if __name__ == '__main__':
+   main()
