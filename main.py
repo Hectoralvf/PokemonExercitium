@@ -150,10 +150,10 @@ def kill_team_foe(team_foe):                                # debugging purposes
 def battle_display(team_user, active_user, team_foe, active_foe):
     print('\nUser:')
     print(team_user[active_user].name)
-    print(team_user[active_user].current_hp)
+    print(team_user[active_user].current_hp, '/', team_user[active_user].HP)
     print('\nFoe')
     print(team_foe[active_foe].name)
-    print(team_foe[active_foe].current_hp)
+    print(team_foe[active_foe].current_hp, '/', team_foe[active_foe].HP)
 
 def battle_menu_main(menu_choice):
     print("""
@@ -182,11 +182,17 @@ def battle_menu_team(team_user, active_user):
         if i != active_user:
             print('[' + str(i) + ']', team_user[i].name, team_user[i].p_id)
             list_pid.append(team_user[i].p_id)
-    menu_choice = int(input())
-    if menu_choice != 0:
-        pokemon_choice = list_pid[menu_choice-1]
-        return pokemon_choice
-    else: return menu_choice
+    menu_choice = int(input())-1
+    return menu_choice
+
+def battle_dead_team(team_user, active_user):
+    list_pid = []
+    print('\n[0] Back')
+    for i in range(len(team_user)):
+        print('[' + str(i) + ']', team_user[i].name, team_user[i].p_id)
+        list_pid.append(team_user[i].p_id)
+    menu_choice = int(input())-1
+    return menu_choice
 
 def Attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
     random_number: int
@@ -292,9 +298,9 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
             while i < len(team_user[active_user].moveset[attacks[attacker]].status_foe['affected']): 
                 if random.random() <= team_user[active_user].moveset[attacks[attacker]].status_foe['probability'][i]:
                     if team_user[active_user].moveset[attacks[attacker]].status_foe['affected'][i] not in team_foe[active_foe].status_list:
-                        team_foe[active_foe].status_list.append(team_user[active_user].moveset[attacks[attacker]].status_user['affected'][i])
+                        team_foe[active_foe].status_list.append(team_user[active_user].moveset[attacks[attacker]].status_foe['affected'][i])
                         if team_user[active_user].moveset[attacks[attacker]].status_user['turns'] != None:
-                            team_foe[active_foe].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_user['turns'][i])
+                            team_foe[active_foe].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_foe['turns'][i])
                         else: team_user[active_user].status_turns.append(random.randint(2,5))
                 print(team_foe[active_foe].status_list)
                 i += 1
@@ -520,8 +526,25 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
     attack_functions_output: list
     damage_dealt: int = 0
     failed = None
+    hazard: list = []
 
     if attacker == 0:
+        attack_functions_output = Status_effect(team_user, active_user)
+        team_user = attack_functions_output[0]
+        if attack_functions_output[1] == True: 
+            print('Burning damage')
+        if attack_functions_output[2] == True: 
+            print('Poison damage')
+        if attack_functions_output[3] == True: 
+            hazard.append(0)
+        attack_functions_output = Status_effect(team_foe, active_foe)
+        team_foe = attack_functions_output[0]
+        if attack_functions_output[1] == True: 
+            print('Burning damage')
+        if attack_functions_output[2] == True: 
+            print('Poison damage')
+        if attack_functions_output[3] == True: 
+            hazard.append(1)
         if 10 not in team_user[active_user].status_list:
             if 31 not in team_foe[active_foe].status_list:
                 if (9 in team_user[active_user].status_list) and (random.random() < 0.33):
@@ -620,8 +643,8 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
             else: print(team_user[active_user].name + ' is protecting himself')
         else: print(team_foe[active_foe].name + ' flinched!')
         team_foe[active_foe].moveset[attacks[attacker]].spendPP()
-    return [team_user, team_foe, failed]
-
+    return [team_user, team_foe, failed, hazard]
+    
 def Battle(chosen_pokemon):
     i: int = 0
     endCombat: bool = False
@@ -662,22 +685,32 @@ def Battle(chosen_pokemon):
                     print('++'+str(attacking_output)+'++')
                     attacks = [attacking_output[2], attacking_output[3]]
                     for attacker in attacking_order:
+                        if attacker == 0 and team_user[active_user].current_hp == 0:
+                            team_user.pop(active_user)
+                            menu_choice = battle_menu_team(team_user, active_user)
+                            active_user = menu_choice
+                            battle_status = 0
+                        if attacker == 1 and team_foe[active_foe].current_hp == 0:
+                            team_foe.pop(active_foe)
+                            if team_foe: active_foe = random.randint(0, len(team_foe))
+                            else: battle_status = 0
                         attack_output = Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
                         team_user = attack_output[0]
                         team_foe = attack_output[1]
                         battle_display(team_user, active_user, team_foe, active_foe)
                     print(team_user[active_user].stage_att)
             elif battle_status == 2: 
                 menu_choice = battle_menu_team(team_user, active_user)
+                if menu_choice != -1:
+                    active_user = menu_choice
+                    attacking_output = Attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+                    attacking_order = [attacking_output[0], attacking_output[1]]
+                    attack_output = Attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
+                    team_user = attack_output[0]
+                    team_foe = attack_output[1]
                 battle_status = 0
-                if menu_choice != 0:
-                    i = 0
-                    while i < len(team_user): 
-                        if team_user[i].p_id == menu_choice: 
-                            active_user = i
-                            i = len(team_user)
-                        else: 
-                            i += 1
+
         else: endCombat = True
         
         # team_user = kill_team_user(team_user)
