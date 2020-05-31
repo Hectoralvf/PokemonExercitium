@@ -500,12 +500,14 @@ def Status_effect(team, active):
     poisoned: bool = False
     apply_hazard: bool = False
 
-    if team[active].status_list != None:
-        while i < len(team[active].status_turns):
-            if team[active].status_turns[i] == 0: 
-                team[active].status_turns[i].pop(i)
-            else: i += 1
+    while i < len(team[active].status_turns):
+        if team[active].status_turns[i] == 0: 
+            team[active].status_turns[i].pop(i)
+            team[active].status_list[i].pop(i)
+        else: i += 1
         i = 0
+
+    if team[active].status_list != None:
         while i < len(team[active].status_list):
             if team[active].status_list[i] == 1: 
                 team[active].current_hp -= team[active].HP/8
