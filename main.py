@@ -1,8 +1,13 @@
-import pygame
+import os
+import sys
+
 import json
 import random
-import os
+import pygame
 
+from pygame.locals import *
+
+SCREEN_FILL: (253, 253, 253)
 
 class Move():
     def __init__(self, move_id): 
@@ -108,7 +113,7 @@ Turns:  {}
 
 Moves: {}
 """.format(self.p_id, self.name, self.ko, self.main_type, self.sec_type, self.current_hp, self.HP, self.current_att, self.ATT, self.stage_att, self.current_def, self.DEF_, self.stage_def, self.current_sp_att, self.SP_ATT, self.stage_sp_att, self.current_sp_def, self.SP_DEF, self.stage_sp_def, self.current_speed, self.SPEED, self.stage_speed, self.accuracy, self.stage_accuracy, self.evasion, self.stage_evasion, self.status_list, self.status_turns, self.moveset)
-
+ 
 def build_team_user(team_user, chosen_pokemon):
     num_pokemons = len(chosen_pokemon)
     for i in range(num_pokemons):
@@ -137,61 +142,20 @@ def is_combat_possible(team_user, team_foe):
         return False
     else: return True
 
-def kill_team_user(team_user):                                # debugging purposes
-    for i in range(len(team_user)):
-        team_user[i].ko = True
-    return team_user
-
-def kill_team_foe(team_foe):                                # debugging purposes
-    for i in range(len(team_foe)):           # debugging purposes
-        team_foe[i].ko = True                # debugging purposes
-    return team_foe
-
-def battle_display(team_user, active_user, team_foe, active_foe):
-    print('\nUser:')
-    print(team_user[active_user].name)
-    print(team_user[active_user].current_hp, '/', team_user[active_user].HP)
-    print('\nFoe')
-    print(team_foe[active_foe].name)
-    print(team_foe[active_foe].current_hp, '/', team_foe[active_foe].HP)
-
 def battle_menu_main(menu_choice):
-    print("""
-[1] Moves
-[2] Team
-[3] Exit
-""")
     menu_choice = int(input())
     return menu_choice
 
 def battle_menu_moves(team_user, active_user, team_foe, active_foe):
-    print("""
-[0] Back
-[1] {}
-[2] {}
-[3] {}
-[4] {}
-""".format(team_user[active_user].moveset[0].name, team_user[active_user].moveset[1].name, team_user[active_user].moveset[2].name, team_user[active_user].moveset[3].name))
     menu_choice = int(input())-1
     return menu_choice
 
 def battle_menu_team(team_user, active_user):
-    list_pid = []
-    print('\n[0] Back')
-    for i in range(len(team_user)):
-        if i != active_user:
-            print('[' + str(i) + ']', team_user[i].name, team_user[i].p_id)
-            list_pid.append(team_user[i].p_id)
-    menu_choice = int(input())-1
+    menu_choice = int(input())
     return menu_choice
 
 def battle_dead_team(team_user, active_user):
-    list_pid = []
-    print('\n[0] Back')
-    for i in range(len(team_user)):
-        print('[' + str(i) + ']', team_user[i].name, team_user[i].p_id)
-        list_pid.append(team_user[i].p_id)
-    menu_choice = int(input())-1
+    menu_choice = int(input())
     return menu_choice
 
 def Attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
@@ -291,7 +255,6 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                         if team_user[active_user].moveset[attacks[attacker]].status_user['turns'] != None:
                             team_user[active_user].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_user['turns'][i])
                         else: team_user[active_user].status_turns.append(random.randint(2,5))
-                print(team_user[active_user].status_list)
                 i += 1
         if team_user[active_user].moveset[attacks[attacker]].status_foe != None:
             i = 0
@@ -302,7 +265,6 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                         if team_user[active_user].moveset[attacks[attacker]].status_user['turns'] != None:
                             team_foe[active_foe].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_foe['turns'][i])
                         else: team_user[active_user].status_turns.append(random.randint(2,5))
-                print(team_foe[active_foe].status_list)
                 i += 1
     if attacker == 1:
         if team_foe[active_foe].moveset[attacks[attacker]].status_user != None:
@@ -314,7 +276,6 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                         if team_foe[active_foe].moveset[attacks[attacker]].status_user['turns'] != None: 
                             team_foe[active_foe].status_turns.append(team_foe[active_foe].moveset[attacks[attacker]].status_user['turns'][i])
                         else: team_foe[active_foe].status_turns.append(random.randint(2,5))
-                print(team_foe[active_foe].status_list)
                 i += 1
         if team_foe[active_foe].moveset[attacks[attacker]].status_foe != None:
             i = 0
@@ -325,122 +286,7 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                         if team_foe[active_foe].moveset[attacks[attacker]].status_foe['turns'] != None:
                             team_user[active_user].status_turns.append(team_foe[active_foe].moveset[attacks[attacker]].status_foe['turns'][i])
                         else: team_user[active_user].status_turns.append(random.randint(2,5))
-                print(team_user[active_user].status_list)
                 i += 1
-    return [team_user, team_foe]
-
-def Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks):
-    i: int = 0
-    if attacker == 0:
-        if team_user[active_user].moveset[attacks[attacker]].stats_user != None:
-            i = 0
-            while i < len(team_user[active_user].moveset[attacks[attacker]].stats_user['affected']): 
-                if random.random() <= team_user[active_user].moveset[attacks[attacker]].stats_user['probability'][i]:
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 2:
-                        team_user[active_user].stage_att += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_att > 6:
-                            team_user[active_user].stage_att = 6
-                        elif team_user[active_user].stage_att < -6:
-                            team_user[active_user].stage_att = -6
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 3:
-                        team_user[active_user].stage_def += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_def > 6:
-                            team_user[active_user].stage_def = 6
-                        elif team_user[active_user].stage_def < -6:
-                            team_user[active_user].stage_def = -6
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 4:
-                        team_user[active_user].stage_sp_att += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_sp_att > 6:
-                            team_user[active_user].stage_sp_att = 6
-                        elif team_user[active_user].stage_sp_att < -6:
-                            team_user[active_user].stage_sp_att = -6
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 5:
-                        team_user[active_user].stage_sp_def += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_sp_def > 6:
-                            team_user[active_user].stage_sp_def = 6
-                        elif team_user[active_user].stage_sp_def < -6:
-                            team_user[active_user].stage_sp_def = -6
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 6:
-                        team_user[active_user].stage_speed += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_speed > 6:
-                            team_user[active_user].stage_speed = 6
-                        elif team_user[active_user].stage_speed < -6:
-                            team_user[active_user].stage_speed = -6
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 7:
-                        team_user[active_user].stage_accuracy += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_accuracy > 6:
-                            team_user[active_user].stage_accuracy = 6
-                        elif team_user[active_user].stage_accuracy < -6:
-                            team_user[active_user].stage_accuracy = -6
-                    if team_user[active_user].moveset[attacks[attacker]].stats_user['affected'][i] == 8:
-                        team_user[active_user].stage_evasion += team_user[active_user].moveset[attacks[attacker]].stats_user['stages'][i]
-                        if team_user[active_user].stage_evasion > 6:
-                            team_user[active_user].stage_evasion = 6
-                        elif team_user[active_user].stage_evasion < -6:
-                            team_user[active_user].stage_evasion = -6
-                i += 1
-        print(team_user[active_user].stage_att)
-        if team_user[active_user].moveset[attacks[attacker]].stats_foe != None:
-            i = 0
-            while i < len(team_user[active_user].moveset[attacks[attacker]].stats_foe['affected']): 
-                if random.random() <= team_user[active_user].moveset[attacks[attacker]].stats_foe['probability'][i]:
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 2:
-                        team_user[active_user].stage_att += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 3:
-                        team_user[active_user].stage_def += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 4:
-                        team_user[active_user].stage_sp_att += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 5:
-                        team_user[active_user].stage_sp_def += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 6:
-                        team_user[active_user].stage_speed += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 7:
-                        team_user[active_user].stage_accuracy += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_user[active_user].moveset[attacks[attacker]].stats_foe['affected'][i] == 8:
-                        team_user[active_user].stage_evasion += team_user[active_user].moveset[attacks[attacker]].stats_foe['stages'][i]
-                i += 1
-        print(team_user[active_user].stage_att)
-    if attacker == 1:
-        if team_foe[active_foe].moveset[attacks[1]].stats_user != None:
-            i = 0
-            while i < len(team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected']): 
-                if random.random() <= team_foe[active_foe].moveset[attacks[attacker]].stats_user['probability'][i]:
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 2:
-                        team_foe[active_foe].stage_att += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 3:
-                        team_foe[active_foe].stage_def += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 4:
-                        team_foe[active_foe].stage_sp_att += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 5:
-                        team_foe[active_foe].stage_sp_def += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 6:
-                        team_foe[active_foe].stage_speed += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 7:
-                        team_foe[active_foe].stage_accuracy += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_user['affected'][i] == 8:
-                        team_foe[active_foe].stage_evasion += team_foe[active_foe].moveset[attacks[attacker]].stats_user['stages'][i]
-                i += 1
-        print(team_foe[active_foe].stage_att)
-        if team_foe[active_foe].moveset[attacks[attacker]].stats_foe != None:
-            i = 0
-            while i < len(team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected']): 
-                if random.random() <= team_foe[active_foe].moveset[attacks[attacker]].stats_foe['probability'][i]:
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 2:
-                        team_user[active_user].stage_att += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 3:
-                        team_user[active_user].stage_def += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 4:
-                        team_user[active_user].stage_sp_att += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 5:
-                        team_user[active_user].stage_sp_def += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 6:
-                        team_user[active_user].stage_speed += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 7:
-                        team_user[active_user].stage_accuracy += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                    if team_foe[active_foe].moveset[attacks[attacker]].stats_foe['affected'][i] == 8:
-                        team_user[active_user].stage_evasion += team_foe[active_foe].moveset[attacks[attacker]].stats_foe['stages'][i]
-                i += 1
-        print(team_user[active_user].stage_att)
     return [team_user, team_foe]
 
 def Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt):
@@ -534,17 +380,17 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
         attack_functions_output = Status_effect(team_user, active_user)
         team_user = attack_functions_output[0]
         if attack_functions_output[1] == True: 
-            print('Burning damage')
+            print('Burning damage u')
         if attack_functions_output[2] == True: 
-            print('Poison damage')
+            print('Poison damage u')
         if attack_functions_output[3] == True: 
             hazard.append(0)
         attack_functions_output = Status_effect(team_foe, active_foe)
         team_foe = attack_functions_output[0]
         if attack_functions_output[1] == True: 
-            print('Burning damage')
+            print('Burning damage f')
         if attack_functions_output[2] == True: 
-            print('Poison damage')
+            print('Poison damage f')
         if attack_functions_output[3] == True: 
             hazard.append(1)
         if 10 not in team_user[active_user].status_list:
@@ -566,9 +412,6 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                                 attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                                 team_user = attack_functions_output[0]
                                 team_foe = attack_functions_output[1]
-                            attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
                             attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
@@ -584,9 +427,6 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                             attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
-                        attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                        team_user = attack_functions_output[0]
-                        team_foe = attack_functions_output[1]
                         attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                         team_user = attack_functions_output[0]
                         team_foe = attack_functions_output[1]
@@ -616,9 +456,6 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                                 attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                                 team_user = attack_functions_output[0]
                                 team_foe = attack_functions_output[1]
-                            attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
                             attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
@@ -636,9 +473,6 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                             attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
-                        attack_functions_output = Attack_stats(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                        team_user = attack_functions_output[0]
-                        team_foe = attack_functions_output[1]
                         attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                         team_user = attack_functions_output[0]
                         team_foe = attack_functions_output[1]
@@ -646,7 +480,7 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
         else: print(team_foe[active_foe].name + ' flinched!')
         team_foe[active_foe].moveset[attacks[attacker]].spendPP()
     return [team_user, team_foe, failed, hazard]
-    
+
 def Battle(chosen_pokemon):
     i: int = 0
     endCombat: bool = False
@@ -674,7 +508,6 @@ def Battle(chosen_pokemon):
         if is_combat_possible(team_user, team_foe) == False:
             battle_status = 3
         if battle_status != 3: 
-            battle_display(team_user, active_user, team_foe, active_foe)
             if battle_status == 0:
                 menu_choice = battle_menu_main(menu_choice)
                 battle_status = menu_choice
@@ -684,7 +517,6 @@ def Battle(chosen_pokemon):
                 if menu_choice != -1:
                     attacking_output = Attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
                     attacking_order = [attacking_output[0], attacking_output[1]]
-                    print('++'+str(attacking_output)+'++')
                     attacks = [attacking_output[2], attacking_output[3]]
                     for attacker in attacking_order:
                         if attacker == 0 and team_user[active_user].current_hp == 0:
@@ -700,8 +532,6 @@ def Battle(chosen_pokemon):
                         print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
                         team_user = attack_output[0]
                         team_foe = attack_output[1]
-                        battle_display(team_user, active_user, team_foe, active_foe)
-                    print(team_user[active_user].stage_att)
             elif battle_status == 2: 
                 menu_choice = battle_menu_team(team_user, active_user)
                 if menu_choice != -1:
@@ -714,11 +544,147 @@ def Battle(chosen_pokemon):
                 battle_status = 0
 
         else: endCombat = True
-        
-        # team_user = kill_team_user(team_user)
-        # team_foe = kill_team_foe(team_foe)
 
-        
-            
-Battle([76,6,9,150])
+def main():
+    pygame.init()
+    pygame.display.set_caption("Pokémon Exercitium")
+    screen = pygame.display.set_mode((1366, 768))
+    dir_py = os.path.dirname(__file__)
 
+    # PyGame fonts
+    roboto_medium_rel_path = os.path.join(dir_py, 'fonts/roboto_medium.ttf')
+    author_text_font = pygame.font.Font(roboto_medium_rel_path, 20)
+    team_nametag = pygame.font.Font(roboto_medium_rel_path, 28)
+
+    # PyGame variables main menu
+    menu_bg_rel_path = os.path.join(dir_py, 'images/menu_bg.png')
+    menu_button_builder_rel_path = os.path.join(dir_py, 'images/menu_button_builder.png')
+    menu_button_combat_rel_path = os.path.join(dir_py, 'images/menu_button_combat.png')
+    menu_button_guide_rel_path = os.path.join(dir_py, 'images/menu_button_guide.png')
+    menu_button_quit_rel_path = os.path.join(dir_py, 'images/menu_button_quit.png')
+    menu_bg_path = pygame.image.load(str(menu_bg_rel_path))
+    menu_button_builder_path = pygame.image.load(str(menu_button_builder_rel_path))
+    menu_button_combat_path = pygame.image.load(str(menu_button_combat_rel_path))
+    menu_button_guide_path = pygame.image.load(str(menu_button_guide_rel_path))
+    menu_button_quit_path = pygame.image.load(str(menu_button_quit_rel_path))
+
+    # PyGame variables builder menu
+    builder_bg_rel_path = os.path.join(dir_py, 'images/builder_bg.png')
+    builder_bg_path = pygame.image.load(str(builder_bg_rel_path))
+    builder_title_team_rel_path = os.path.join(dir_py, 'images/builder_title_team.png')
+    builder_title_team_path = pygame.image.load(str(builder_title_team_rel_path))
+    builder_title_box_rel_path = os.path.join(dir_py, 'images/builder_title_box.png')
+    builder_title_box_path = pygame.image.load(str(builder_title_box_rel_path))
+    builder_button_team_rel_path = os.path.join(dir_py, 'images/builder_button_team.png')
+    builder_button_team_path = pygame.image.load(str(builder_button_team_rel_path))
+
+    # PyGame music
+    song_rel_path = os.path.join(dir_py, 'music/song_' + str(random.randint(1,5)) + '.mp3')
+    pygame.mixer.music.load(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.set_volume(0.35)
+    pygame.mixer.music.play()
+
+    # Game logic variables
+    i: int = 0
+    game_state: int = 0
+    team: list = [91, 65, 94, 131, 0, 0]
+    active: int = 0
+
+    while True:
+
+      # Drawing on screen
+        if game_state == 0:
+            screen.fill((253, 253, 253))
+            screen.blit(menu_bg_path, [0, 0])
+            screen.blit(menu_button_builder_path, [731, 117])
+            screen.blit(menu_button_combat_path, [731, 248])
+            screen.blit(menu_button_guide_path, [731, 379])
+            screen.blit(menu_button_quit_path, [731, 510])
+            author_text = author_text_font.render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128))
+            screen.blit(author_text, [970, 743])
+
+        if game_state == 1: 
+            screen.fill((253, 253, 253))
+            screen.blit(builder_bg_path, [0, 0])
+            screen.blit(builder_title_team_path, [18, 18])
+            screen.blit(builder_title_box_path, [810, 55])
+            screen.blit(builder_button_team_path, [18, 95])
+            screen.blit(builder_button_team_path, [18, 205])
+            screen.blit(builder_button_team_path, [18, 315])
+            screen.blit(builder_button_team_path, [18, 425])
+            screen.blit(builder_button_team_path, [18, 535])
+            screen.blit(builder_button_team_path, [18, 645])
+            pokemon_1_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[0]) + '.png')))
+            screen.blit(pokemon_1_spr, [40, 115])
+            pokemon_2_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[1]) + '.png')))
+            screen.blit(pokemon_2_spr, [40, 230])
+            pokemon_3_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[2]) + '.png')))
+            screen.blit(pokemon_3_spr, [40, 340])
+            pokemon_4_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[3]) + '.png')))
+            screen.blit(pokemon_4_spr, [40, 450])
+            pokemon_5_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[4]) + '.png')))
+            screen.blit(pokemon_5_spr, [40, 560])
+            pokemon_6_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[5]) + '.png')))
+            screen.blit(pokemon_6_spr, [40, 670])
+
+                
+
+      # Check events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+            if game_state == 0:
+                if event.type == pygame.MOUSEBUTTONDOWN: 
+                    pos = pygame.mouse.get_pos()
+                    #x, y = event.pos
+                    rect = menu_button_builder_path.get_rect()
+                    rect[0] += 731
+                    rect[1] += 117
+                    rect[2] += 731
+                    rect[3] += 117
+                    if rect.collidepoint(pos):
+                        game_state = 1
+                    else:
+                        rect = menu_button_combat_path.get_rect()
+                        rect[0] += 731
+                        rect[1] += 248
+                        rect[2] += 731
+                        rect[3] += 248
+                        if rect.collidepoint(pos):
+                            game_state = 2
+                        else: 
+                            rect = menu_button_guide_path.get_rect()
+                            rect[0] += 731
+                            rect[1] += 379
+                            rect[2] += 731
+                            rect[3] += 379
+                            if rect.collidepoint(pos):
+                                game_state = 3
+                            else: 
+                                rect = menu_button_quit_path.get_rect()
+                                rect[0] += 731
+                                rect[1] += 510
+                                rect[2] += 731
+                                rect[3] += 510
+                                if rect.collidepoint(pos):
+                                    game_state = 4
+            if game_state == 4:
+                pygame.quit()
+                sys.exit(0)
+
+
+      # refresh screen
+        pygame.display.update()
+    
+
+if __name__ == '__main__':
+   main()
