@@ -550,18 +550,61 @@ def main():
     pygame.display.set_caption("Pokémon Exercitium")
     screen = pygame.display.set_mode((1366, 768))
     dir_py = os.path.dirname(__file__)
+
+    # PyGame fonts
+    roboto_medium_rel_path = os.path.join(dir_py, 'fonts/roboto_medium.ttf')
+    author_text_font = pygame.font.Font(roboto_medium_rel_path, 20)
+
+    # PyGame variables main menu
     menu_bg_rel_path = os.path.join(dir_py, 'images/menu_bg.png')
+    menu_button_builder_rel_path = os.path.join(dir_py, 'images/menu_button_builder.png')
+    menu_button_combat_rel_path = os.path.join(dir_py, 'images/menu_button_combat.png')
+    menu_button_guide_rel_path = os.path.join(dir_py, 'images/menu_button_guide.png')
+    menu_button_quit_rel_path = os.path.join(dir_py, 'images/menu_button_quit.png')
     menu_bg_path = pygame.image.load(str(menu_bg_rel_path))
+    menu_button_builder_path = pygame.image.load(str(menu_button_builder_rel_path))
+    menu_button_combat_path = pygame.image.load(str(menu_button_combat_rel_path))
+    menu_button_guide_path = pygame.image.load(str(menu_button_guide_rel_path))
+    menu_button_quit_path = pygame.image.load(str(menu_button_quit_rel_path))
+
+    # PyGame variables builder menu
+    builder_bg_rel_path = os.path.join(dir_py, 'images/builder_bg.png')
+    builder_bg_path = pygame.image.load(str(builder_bg_rel_path))
+
+    # PyGame music
+    song_rel_path = os.path.join(dir_py, 'music/song_' + str(random.randint(1,5)) + '.mp3')
+    pygame.mixer.music.load(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.set_volume(0.35)
+    pygame.mixer.music.play()
+
+    # Game logic variables
+    game_state: int = 1
 
    # Bucle principal
     while True:
 
       # 1.- Debúxase a pantalla
-        screen.fill((253, 253, 253))
-        #fonte = pygame.font.Font(None, 20)
-        #texto = fonte.render("Hello World!", True, (25, 25, 25))
-        screen.blit(menu_bg_path, [0, 0])
-        
+        if game_state == 0:
+            screen.fill((253, 253, 253))
+            screen.blit(menu_bg_path, [0, 0])
+            screen.blit(menu_button_builder_path, [731, 117])
+            screen.blit(menu_button_combat_path, [731, 248])
+            screen.blit(menu_button_guide_path, [731, 379])
+            screen.blit(menu_button_quit_path, [731, 510])
+            author_text = author_text_font.render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128))
+            screen.blit(author_text, [970, 743])
+
+        if game_state == 1: 
+            screen.fill((253, 253, 253))
+            screen.blit(builder_bg_path, [0, 0])
 
       # 2.- Compróbanse os eventos
         for event in pygame.event.get():
