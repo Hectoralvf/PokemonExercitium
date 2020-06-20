@@ -1,1 +1,4 @@
-#Pokemon Exercitium
+# Pokemon Exercitium
+
+### Héctor Álvarez Fernández
+
