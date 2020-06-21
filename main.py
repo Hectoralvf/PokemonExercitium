@@ -564,6 +564,12 @@ def Load_poke_sprites_big(view):
         sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/pokemon/big/' + view, filename).replace('/', '\\')))
     return sprites_list
 
+def Load_type_sprites(size):
+    sprites_list: list = []
+    for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/types/' + size).replace('/', '\\')):
+        sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/types/' + size, filename).replace('/', '\\')))
+    return sprites_list
+
 def Playlist_music(SONG_END):
     pygame.mixer.music.set_endevent(SONG_END)
     song_rel_path = os.path.join(os.path.dirname(__file__), 'music/song_' + str(random.randint(1,5)) + '.mp3')
@@ -589,22 +595,26 @@ def Blit_builder(screen, resources, team):
     counter = 1
     counter_i = 0
     counter_j = 0
+    dir_py = os.path.dirname(__file__)
+    rel_path = 'data/pokedex.json'
+    sprites_list = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny/'))
+    types_list = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/types/tiny/'))
     screen.fill((255, 255, 255))
     for image in resources['images_builder']: 
-        if resources['images_builder'].index(image) == 0:
+        if resources['images_builder'].index(image) == 0:    # render background
             screen.blit(image, [0, 0])
-        elif resources['images_builder'].index(image) == 1:
+        elif resources['images_builder'].index(image) == 1:  # render party title
             screen.blit(image, [18, 18])
-        elif resources['images_builder'].index(image) == 2:
+        elif resources['images_builder'].index(image) == 2:  # render party buttons
             while counter_i < 6: 
                 if team[counter_i] != 0:
                     screen.blit(image, [18, 95 + 110*counter_i])
                     counter_i += 1
                 else: counter_i += 6
             counter_i = 0
-        elif resources['images_builder'].index(image) == 3:
+        elif resources['images_builder'].index(image) == 3:  # render box titles
             screen.blit(image, [780, 55])
-        elif resources['images_builder'].index(image) == 4:
+        elif resources['images_builder'].index(image) == 4:  # render box buttons
             while counter_j < 5: 
                 while counter_i < 6: 
                     screen.blit(image, [672 + 110*counter_i, 160 + 110*counter_j])
@@ -615,7 +625,21 @@ def Blit_builder(screen, resources, team):
                 counter_j += 1
         counter_i = 0
         counter_j = 0
-    while counter_j < 5: 
+    with open(os.path.join(dir_py, rel_path), 'r') as f_pokedex:
+        dic_pokedex = json.load(f_pokedex)
+        for id in team:
+            if id != 0:
+                index_ = str(id) + '.png'
+                if len(index_) < 7: 
+                    index_ = '0' + index_
+                if len(index_) < 7: 
+                    index_ = '0' + index_
+                screen.blit(resources['sprites_poke_tiny'][sprites_list.index(index_)], [35, 118 + 110*(team.index(id))])
+                screen.blit(resources['font_roboto_medium_24'].render(dic_pokedex[str(id)]['name'], True, (90,90,90)), [120, 115 + 110*(team.index(id))])
+                screen.blit(resources['sprites_types_tiny'][types_list.index(dic_pokedex[str(id)]['mainType'] + '.png')], [120, 150 + 110*(team.index(id))])
+                if dic_pokedex[str(id)]['secType'] != None: 
+                    screen.blit(resources['sprites_types_tiny'][types_list.index(dic_pokedex[str(id)]['secType'] + '.png')], [128 + resources['sprites_types_tiny'][types_list.index(dic_pokedex[str(id)]['mainType'] + '.png')].get_width(), 150 + 110*(team.index(id))])
+    while counter_j < 5:                                    # render box sprites
         while counter_i < 6: 
             screen.blit(resources['sprites_poke_tiny'][counter], [675 + 110*counter_i, 168 + 110*counter_j])
             counter += 1
@@ -636,10 +660,13 @@ def Main():
         'images_builder': Load_images('builder'),
         'images_battle': [],
         'font_roboto_medium_20': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 20),
+        'font_roboto_medium_24': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 24),
         'font_roboto_medium_28': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 28),
         'sprites_poke_tiny': Load_poke_sprites_tiny(),
         'sprites_poke_big_front': Load_poke_sprites_big('front'),
-        'sprites_poke_big_back': Load_poke_sprites_big('back')
+        'sprites_poke_big_back': Load_poke_sprites_big('back'),
+        'sprites_types_tiny': Load_type_sprites('tiny'),
+        'sprites_types_big': Load_type_sprites('big')
     }
 
     # PyGame music
@@ -650,7 +677,7 @@ def Main():
     # Game logic variables
     i: int = 0
     game_state: int = 1
-    team: list = [91, 65, 94, 131, 0, 0]
+    team: list = [91, 9, 94, 131, 0, 0]
     active: int = 0
 
     while True:
