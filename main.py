@@ -545,95 +545,141 @@ def Battle(chosen_pokemon):
 
         else: endCombat = True
 
-def main():
+def Load_images(to_build):
+    images_list: list = []
+    for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'images')):
+        if filename.startswith(to_build + '_'):
+            images_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__)+'\\images', filename).replace('/', '\\')))
+    return images_list
+
+def Load_poke_sprites_tiny():
+    sprites_list: list = []
+    for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny').replace('/', '\\')):
+        sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/pokemon/tiny', filename).replace('/', '\\')))
+    return sprites_list
+
+def Load_poke_sprites_big(view):
+    sprites_list: list = []
+    for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/big/' + view).replace('/', '\\')):
+        sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/pokemon/big/' + view, filename).replace('/', '\\')))
+    return sprites_list
+
+def Playlist_music(SONG_END):
+    pygame.mixer.music.set_endevent(SONG_END)
+    song_rel_path = os.path.join(os.path.dirname(__file__), 'music/song_' + str(random.randint(1,5)) + '.mp3')
+    pygame.mixer.music.load(song_rel_path)
+    for i in range(13):
+        song_rel_path = os.path.join(os.path.dirname(__file__), 'music/song_' + str(random.randint(1,5)) + '.mp3')
+        pygame.mixer.music.queue(song_rel_path)
+    pygame.mixer.music.set_volume(0.35)
+    return pygame.mixer.music
+
+def Blit_menu(screen, resources): 
+    counter = 0
+    screen.fill((255, 255, 255))
+    for image in resources['images_menu']: 
+        if resources['images_menu'].index(image) != 0:
+            screen.blit(image, [731, 117 + 131*counter])
+            counter += 1
+        else: screen.blit(image, [0, 0])
+    screen.blit(resources['font_roboto_medium_20'].render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128)), [970, 743])
+    return screen
+
+def Blit_builder(screen, resources): 
+    counter = 0
+    counter_i = 0
+    counter_j = 0
+    screen.fill((255, 255, 255))
+    for image in resources['images_builder']: 
+        if resources['images_builder'].index(image) == 0:
+            screen.blit(image, [0, 0])
+        elif resources['images_builder'].index(image) == 1:
+            screen.blit(image, [18, 18])
+        elif resources['images_builder'].index(image) == 2:
+            while counter_i < 6: 
+                screen.blit(image, [18, 95 + 110*counter_i])
+                counter_i += 1
+        elif resources['images_builder'].index(image) == 3:
+            screen.blit(image, [780, 55])
+        elif resources['images_builder'].index(image) == 4:
+            while counter_j < 5: 
+                while counter_i < 6: 
+                    screen.blit(image, [560 + 110*counter_i, 160 + 110*counter_j])
+                    if counter_j == 4 and counter_1 == 4:
+                        counter_i += 3
+                    else: counter_i += 1
+                counter_j += 1
+        counter_i = 0
+        counter_j = 0
+    while counter_j < 6: 
+        while counter_i < 4: 
+            image = resources['sprites_poke_tiny'][counter]
+            screen.blit(image, [560 + 110*counter_j, 160 + 110*counter_i])
+            if counter_j == 6 and counter_i == 2:
+                counter_i += 3
+            else: counter_i += 1
+            counter += 1
+        counter_i = 0
+        counter_j += 1
+                
+    return screen
+
+def Main():
     pygame.init()
     pygame.display.set_caption("Pokémon Exercitium")
+    pygame.display.set_icon(pygame.image.load(os.path.dirname(__file__) + '/images/display_icon.png'))
     screen = pygame.display.set_mode((1366, 768))
-    dir_py = os.path.dirname(__file__)
-
-    # PyGame fonts
-    roboto_medium_rel_path = os.path.join(dir_py, 'fonts/roboto_medium.ttf')
-    author_text_font = pygame.font.Font(roboto_medium_rel_path, 20)
-    team_nametag = pygame.font.Font(roboto_medium_rel_path, 28)
-
-    # PyGame variables main menu
-    menu_bg_rel_path = os.path.join(dir_py, 'images/menu_bg.png')
-    menu_button_builder_rel_path = os.path.join(dir_py, 'images/menu_button_builder.png')
-    menu_button_combat_rel_path = os.path.join(dir_py, 'images/menu_button_combat.png')
-    menu_button_guide_rel_path = os.path.join(dir_py, 'images/menu_button_guide.png')
-    menu_button_quit_rel_path = os.path.join(dir_py, 'images/menu_button_quit.png')
-    menu_bg_path = pygame.image.load(str(menu_bg_rel_path))
-    menu_button_builder_path = pygame.image.load(str(menu_button_builder_rel_path))
-    menu_button_combat_path = pygame.image.load(str(menu_button_combat_rel_path))
-    menu_button_guide_path = pygame.image.load(str(menu_button_guide_rel_path))
-    menu_button_quit_path = pygame.image.load(str(menu_button_quit_rel_path))
-
-    # PyGame variables builder menu
-    builder_bg_rel_path = os.path.join(dir_py, 'images/builder_bg.png')
-    builder_bg_path = pygame.image.load(str(builder_bg_rel_path))
-    builder_title_team_rel_path = os.path.join(dir_py, 'images/builder_title_team.png')
-    builder_title_team_path = pygame.image.load(str(builder_title_team_rel_path))
-    builder_title_box_rel_path = os.path.join(dir_py, 'images/builder_title_box.png')
-    builder_title_box_path = pygame.image.load(str(builder_title_box_rel_path))
-    builder_button_team_rel_path = os.path.join(dir_py, 'images/builder_button_team.png')
-    builder_button_team_path = pygame.image.load(str(builder_button_team_rel_path))
+    resources: dict = {
+        'images_menu': Load_images('menu'),
+        'images_builder': Load_images('builder'),
+        'images_battle': [],
+        'font_roboto_medium_20': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 20),
+        'font_roboto_medium_28': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 28),
+        'sprites_poke_tiny': Load_poke_sprites_tiny(),
+        'sprites_poke_big_front': Load_poke_sprites_big('front'),
+        'sprites_poke_big_back': Load_poke_sprites_big('back')
+    }
 
     # PyGame music
-    song_rel_path = os.path.join(dir_py, 'music/song_' + str(random.randint(1,5)) + '.mp3')
-    pygame.mixer.music.load(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.queue(song_rel_path)
-    pygame.mixer.music.set_volume(0.35)
+    SONG_END = pygame.USEREVENT + 1
+    pygame.mixer.music = Playlist_music(SONG_END)
     pygame.mixer.music.play()
 
     # Game logic variables
     i: int = 0
-    game_state: int = 0
+    game_state: int = 1
     team: list = [91, 65, 94, 131, 0, 0]
     active: int = 0
 
     while True:
-
       # Drawing on screen
         if game_state == 0:
-            screen.fill((253, 253, 253))
-            screen.blit(menu_bg_path, [0, 0])
-            screen.blit(menu_button_builder_path, [731, 117])
-            screen.blit(menu_button_combat_path, [731, 248])
-            screen.blit(menu_button_guide_path, [731, 379])
-            screen.blit(menu_button_quit_path, [731, 510])
-            author_text = author_text_font.render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128))
-            screen.blit(author_text, [970, 743])
+            screen = Blit_menu(screen, resources)
 
         if game_state == 1: 
-            screen.fill((253, 253, 253))
-            screen.blit(builder_bg_path, [0, 0])
-            screen.blit(builder_title_team_path, [18, 18])
-            screen.blit(builder_title_box_path, [810, 55])
-            screen.blit(builder_button_team_path, [18, 95])
-            screen.blit(builder_button_team_path, [18, 205])
-            screen.blit(builder_button_team_path, [18, 315])
-            screen.blit(builder_button_team_path, [18, 425])
-            screen.blit(builder_button_team_path, [18, 535])
-            screen.blit(builder_button_team_path, [18, 645])
-            pokemon_1_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[0]) + '.png')))
-            screen.blit(pokemon_1_spr, [40, 115])
-            pokemon_2_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[1]) + '.png')))
-            screen.blit(pokemon_2_spr, [40, 230])
-            pokemon_3_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[2]) + '.png')))
-            screen.blit(pokemon_3_spr, [40, 340])
-            pokemon_4_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[3]) + '.png')))
-            screen.blit(pokemon_4_spr, [40, 450])
-            pokemon_5_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[4]) + '.png')))
-            screen.blit(pokemon_5_spr, [40, 560])
-            pokemon_6_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[5]) + '.png')))
-            screen.blit(pokemon_6_spr, [40, 670])
+            screen = Blit_builder(screen, resources)
+            # screen.fill((253, 253, 253))
+            # screen.blit(builder_bg_path, [0, 0])
+            # screen.blit(builder_title_team_path, [18, 18])
+            # screen.blit(builder_title_box_path, [810, 55])
+            # screen.blit(builder_button_team_path, [18, 95])
+            # screen.blit(builder_button_team_path, [18, 205])
+            # screen.blit(builder_button_team_path, [18, 315])
+            # screen.blit(builder_button_team_path, [18, 425])
+            # screen.blit(builder_button_team_path, [18, 535])
+            # screen.blit(builder_button_team_path, [18, 645])
+            # pokemon_1_spr = pygame.image.load(str(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny/' + str(team[0]) + '.png')))
+            # screen.blit(pokemon_1_spr, [40, 115])
+            # pokemon_2_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[1]) + '.png')))
+            # screen.blit(pokemon_2_spr, [40, 230])
+            # pokemon_3_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[2]) + '.png')))
+            # screen.blit(pokemon_3_spr, [40, 340])
+            # pokemon_4_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[3]) + '.png')))
+            # screen.blit(pokemon_4_spr, [40, 450])
+            # pokemon_5_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[4]) + '.png')))
+            # screen.blit(pokemon_5_spr, [40, 560])
+            # pokemon_6_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[5]) + '.png')))
+            # screen.blit(pokemon_6_spr, [40, 670])
 
                 
 
@@ -642,41 +688,44 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit(0)
-            if game_state == 0:
-                if event.type == pygame.MOUSEBUTTONDOWN: 
-                    pos = pygame.mouse.get_pos()
-                    #x, y = event.pos
-                    rect = menu_button_builder_path.get_rect()
-                    rect[0] += 731
-                    rect[1] += 117
-                    rect[2] += 731
-                    rect[3] += 117
-                    if rect.collidepoint(pos):
-                        game_state = 1
-                    else:
-                        rect = menu_button_combat_path.get_rect()
-                        rect[0] += 731
-                        rect[1] += 248
-                        rect[2] += 731
-                        rect[3] += 248
-                        if rect.collidepoint(pos):
-                            game_state = 2
-                        else: 
-                            rect = menu_button_guide_path.get_rect()
-                            rect[0] += 731
-                            rect[1] += 379
-                            rect[2] += 731
-                            rect[3] += 379
-                            if rect.collidepoint(pos):
-                                game_state = 3
-                            else: 
-                                rect = menu_button_quit_path.get_rect()
-                                rect[0] += 731
-                                rect[1] += 510
-                                rect[2] += 731
-                                rect[3] += 510
-                                if rect.collidepoint(pos):
-                                    game_state = 4
+            if event.type == SONG_END:
+                pygame.mixer.music = Playlist_music(SONG_END)
+                pygame.mixer.music.play()
+            # if game_state == 0:
+            #     if event.type == pygame.MOUSEBUTTONUP: 
+            #         pos = pygame.mouse.get_pos()
+            #         #x, y = event.pos
+            #         rect = menu_button_builder_path.get_rect()
+            #         rect[0] += 731
+            #         rect[1] += 117
+            #         rect[2] += 731
+            #         rect[3] += 117
+            #         if rect.collidepoint(pos):
+            #             game_state = 1
+            #         else:
+            #             rect = menu_button_combat_path.get_rect()
+            #             rect[0] += 731
+            #             rect[1] += 248
+            #             rect[2] += 731
+            #             rect[3] += 248
+            #             if rect.collidepoint(pos):
+            #                 game_state = 2
+            #             else: 
+            #                 rect = menu_button_guide_path.get_rect()
+            #                 rect[0] += 731
+            #                 rect[1] += 379
+            #                 rect[2] += 731
+            #                 rect[3] += 379
+            #                 if rect.collidepoint(pos):
+            #                     game_state = 3
+            #                 else: 
+            #                     rect = menu_button_quit_path.get_rect()
+            #                     rect[0] += 731
+            #                     rect[1] += 510
+            #                     rect[2] += 731
+            #                     rect[3] += 510
+            #                     if rect.collidepoint(pos):
+            #                         game_state = 4
             if game_state == 4:
                 pygame.quit()
                 sys.exit(0)
@@ -687,4 +736,4 @@ def main():
     
 
 if __name__ == '__main__':
-   main()
+   Main()
