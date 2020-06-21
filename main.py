@@ -591,7 +591,7 @@ def Blit_menu(screen, resources):
     screen.blit(resources['font_roboto_medium_20'].render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128)), [970, 743])
     return screen
 
-def Blit_builder(screen, resources, team): 
+def Blit_builder(screen, resources, team, active): 
     counter = 1
     counter_i = 0
     counter_j = 0
@@ -608,7 +608,8 @@ def Blit_builder(screen, resources, team):
         elif resources['images_builder'].index(image) == 2:  # render party buttons
             while counter_i < 6: 
                 if team[counter_i] != 0:
-                    screen.blit(image, [18, 95 + 110*counter_i])
+                    if counter_i == active: 
+                        screen.blit(image, [30, 95 + 110*counter_i])
                     counter_i += 1
                 else: counter_i += 6
             counter_i = 0
@@ -623,6 +624,13 @@ def Blit_builder(screen, resources, team):
                     else: counter_i += 1
                 counter_i = 0
                 counter_j += 1
+        elif resources['images_builder'].index(image) == 5:  # render party buttons
+            while counter_i < 6: 
+                if team[counter_i] != 0:
+                    if counter_i != active: 
+                        screen.blit(image, [18, 95 + 110*counter_i])
+                    counter_i += 1
+                else: counter_i += 6
         counter_i = 0
         counter_j = 0
     with open(os.path.join(dir_py, rel_path), 'r') as f_pokedex:
@@ -676,7 +684,7 @@ def Main():
 
     # Game logic variables
     i: int = 0
-    game_state: int = 1
+    game_state: int = 0
     team: list = [91, 9, 94, 131, 0, 0]
     active: int = 0
 
@@ -685,7 +693,7 @@ def Main():
         if game_state == 0:
             screen = Blit_menu(screen, resources)
         if game_state == 1: 
-            screen = Blit_builder(screen, resources, team)
+            screen = Blit_builder(screen, resources, team, active)
 
       # Check events
         for event in pygame.event.get():
@@ -695,11 +703,13 @@ def Main():
             if event.type == SONG_END:
                 pygame.mixer.music = Playlist_music(SONG_END)
                 pygame.mixer.music.play()
-            # if game_state == 0:
-            #     if event.type == pygame.MOUSEBUTTONUP: 
-            #         pos = pygame.mouse.get_pos()
-            #         #x, y = event.pos
-            #         rect = menu_button_builder_path.get_rect()
+            if event.type == pygame.MOUSEBUTTONUP: 
+                mouse_pos = pygame.mouse.get_pos()
+                if game_state == 0:
+                    if resources['images_menu'][1].rect.collidepoint(mouse_pos): 
+                        game_state = 1
+                    rect = menu_button_builder_path.get_rect()
+                
             #         rect[0] += 731
             #         rect[1] += 117
             #         rect[2] += 731
