@@ -585,8 +585,8 @@ def Blit_menu(screen, resources):
     screen.blit(resources['font_roboto_medium_20'].render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128)), [970, 743])
     return screen
 
-def Blit_builder(screen, resources): 
-    counter = 0
+def Blit_builder(screen, resources, team): 
+    counter = 1
     counter_i = 0
     counter_j = 0
     screen.fill((255, 255, 255))
@@ -597,31 +597,33 @@ def Blit_builder(screen, resources):
             screen.blit(image, [18, 18])
         elif resources['images_builder'].index(image) == 2:
             while counter_i < 6: 
-                screen.blit(image, [18, 95 + 110*counter_i])
-                counter_i += 1
+                if team[counter_i] != 0:
+                    screen.blit(image, [18, 95 + 110*counter_i])
+                    counter_i += 1
+                else: counter_i += 6
+            counter_i = 0
         elif resources['images_builder'].index(image) == 3:
             screen.blit(image, [780, 55])
         elif resources['images_builder'].index(image) == 4:
             while counter_j < 5: 
                 while counter_i < 6: 
-                    screen.blit(image, [560 + 110*counter_i, 160 + 110*counter_j])
-                    if counter_j == 4 and counter_1 == 4:
-                        counter_i += 3
+                    screen.blit(image, [672 + 110*counter_i, 160 + 110*counter_j])
+                    if counter_j == 4 and counter_i == 3:
+                        counter_i += 4
                     else: counter_i += 1
+                counter_i = 0
                 counter_j += 1
         counter_i = 0
         counter_j = 0
-    while counter_j < 6: 
-        while counter_i < 4: 
-            image = resources['sprites_poke_tiny'][counter]
-            screen.blit(image, [560 + 110*counter_j, 160 + 110*counter_i])
-            if counter_j == 6 and counter_i == 2:
-                counter_i += 3
-            else: counter_i += 1
+    while counter_j < 5: 
+        while counter_i < 6: 
+            screen.blit(resources['sprites_poke_tiny'][counter], [675 + 110*counter_i, 168 + 110*counter_j])
             counter += 1
+            if counter_j == 4 and counter_i == 3:
+                counter_i += 4
+            else: counter_i += 1
         counter_i = 0
         counter_j += 1
-                
     return screen
 
 def Main():
@@ -655,33 +657,8 @@ def Main():
       # Drawing on screen
         if game_state == 0:
             screen = Blit_menu(screen, resources)
-
         if game_state == 1: 
-            screen = Blit_builder(screen, resources)
-            # screen.fill((253, 253, 253))
-            # screen.blit(builder_bg_path, [0, 0])
-            # screen.blit(builder_title_team_path, [18, 18])
-            # screen.blit(builder_title_box_path, [810, 55])
-            # screen.blit(builder_button_team_path, [18, 95])
-            # screen.blit(builder_button_team_path, [18, 205])
-            # screen.blit(builder_button_team_path, [18, 315])
-            # screen.blit(builder_button_team_path, [18, 425])
-            # screen.blit(builder_button_team_path, [18, 535])
-            # screen.blit(builder_button_team_path, [18, 645])
-            # pokemon_1_spr = pygame.image.load(str(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny/' + str(team[0]) + '.png')))
-            # screen.blit(pokemon_1_spr, [40, 115])
-            # pokemon_2_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[1]) + '.png')))
-            # screen.blit(pokemon_2_spr, [40, 230])
-            # pokemon_3_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[2]) + '.png')))
-            # screen.blit(pokemon_3_spr, [40, 340])
-            # pokemon_4_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[3]) + '.png')))
-            # screen.blit(pokemon_4_spr, [40, 450])
-            # pokemon_5_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[4]) + '.png')))
-            # screen.blit(pokemon_5_spr, [40, 560])
-            # pokemon_6_spr = pygame.image.load(str(os.path.join(dir_py, 'sprites/pokemon/tiny/' + str(team[5]) + '.png')))
-            # screen.blit(pokemon_6_spr, [40, 670])
-
-                
+            screen = Blit_builder(screen, resources, team)
 
       # Check events
         for event in pygame.event.get():
