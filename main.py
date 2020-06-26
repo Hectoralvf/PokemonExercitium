@@ -158,7 +158,7 @@ def battle_dead_team(team_user, active_user):
     menu_choice = int(input())
     return menu_choice
 
-def Attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
+def attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
     random_number: int
     attack_foe = random.randint(1, 16000)   #random with small ranges doesn't feel really random
     if attack_foe < 4001: 
@@ -187,7 +187,7 @@ def Attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
                 return (1, 0, attack_user, attack_foe)
             else: return (0, 1, attack_user, attack_foe)
 
-def Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
+def attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     damage: int = 0
     list_types: list = ["bug", "dark", "dragon", "electric", "fairy", "fighting","fire","flying","ghost","grass","ground","ice","normal","poison","psychic","rock","steel","water"]
     type_: str = ''
@@ -243,7 +243,7 @@ def Attack_power(types_table, team_user, active_user, team_foe, active_foe, atta
         
     return [team_user, team_foe, damage]
 
-def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks):
+def attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks):
     i: int = 0
     if attacker == 0:
         if team_user[active_user].moveset[attacks[attacker]].status_user != None:
@@ -289,7 +289,7 @@ def Attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                 i += 1
     return [team_user, team_foe]
 
-def Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt):
+def attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt):
     if attacker == 0:
         if team_user[active_user].moveset[attacks[attacker]].hp_user != None:
             if team_user[active_user].moveset[attacks[attacker]].hp_user[0] == 0:
@@ -340,7 +340,7 @@ def Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, d
         team_user[active_user].current_hp = 0
     return [team_user, team_foe]
 
-def Status_effect(team, active):
+def status_effect(team, active):
     i: int = 0
     burnt: bool = False
     poisoned: bool = False
@@ -370,14 +370,14 @@ def Status_effect(team, active):
             team[active].status_turns[i] -= 1
     return [team, burnt, poisoned, apply_hazard]
 
-def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
+def attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     attack_functions_output: list
     damage_dealt: int = 0
     failed = None
     hazard: list = []
 
     if attacker == 0:
-        attack_functions_output = Status_effect(team_user, active_user)
+        attack_functions_output = status_effect(team_user, active_user)
         team_user = attack_functions_output[0]
         if attack_functions_output[1] == True: 
             print('Burning damage u')
@@ -385,7 +385,7 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
             print('Poison damage u')
         if attack_functions_output[3] == True: 
             hazard.append(0)
-        attack_functions_output = Status_effect(team_foe, active_foe)
+        attack_functions_output = status_effect(team_foe, active_foe)
         team_foe = attack_functions_output[0]
         if attack_functions_output[1] == True: 
             print('Burning damage f')
@@ -401,7 +401,7 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                     if team_user[active_user].moveset[attacks[attacker]].accuracy != None:
                         if random.random() < (team_user[active_user].moveset[attacks[attacker]].accuracy*team_user[active_user].accuracy*team_foe[active_foe].accuracy):
                             failed = False
-                            attack_functions_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            attack_functions_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
@@ -409,25 +409,25 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                                 taunted = True
                                 print('taunted')
                             else: 
-                                attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                                attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                                 team_user = attack_functions_output[0]
                                 team_foe = attack_functions_output[1]
-                            attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                            attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
                         else: failed = True
                     else:
-                        attack_power_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        attack_power_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
                         team_user = attack_power_output[0]
                         team_foe = attack_power_output[1]
                         if 20 in team_user[active_user].status_list:
                             taunted = True
                             print('taunted')
                         else: 
-                            attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
-                        attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                        attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                         team_user = attack_functions_output[0]
                         team_foe = attack_functions_output[1]
             else: print(team_foe[active_foe].name + ' is protecting himself')
@@ -444,7 +444,7 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                         if random.random() < (team_foe[active_foe].moveset[attacks[attacker]].accuracy*team_foe[active_foe].accuracy*team_user[active_user].accuracy):
                             failed = False
                             print('++++'+str(team_user[active_user].current_hp))
-                            attack_functions_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            attack_functions_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
@@ -453,27 +453,27 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
                                 taunted = True
                                 print('taunted')
                             else: 
-                                attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                                attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                                 team_user = attack_functions_output[0]
                                 team_foe = attack_functions_output[1]
-                            attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                            attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
                         else: 
                             failed = True
                             print('failed')
                     else:
-                        attack_power_output = Attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        attack_power_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
                         team_user = attack_power_output[0]
                         team_foe = attack_power_output[1]
                         if 20 in team_foe[active_foe].status_list:
                             taunted = True
                             print('taunted')
                         else: 
-                            attack_functions_output = Attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
+                            attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
                             team_user = attack_functions_output[0]
                             team_foe = attack_functions_output[1]
-                        attack_functions_output = Attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
+                        attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
                         team_user = attack_functions_output[0]
                         team_foe = attack_functions_output[1]
             else: print(team_user[active_user].name + ' is protecting himself')
@@ -481,7 +481,7 @@ def Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
         team_foe[active_foe].moveset[attacks[attacker]].spendPP()
     return [team_user, team_foe, failed, hazard]
 
-def Battle(chosen_pokemon):
+def battle(chosen_pokemon):
     i: int = 0
     endCombat: bool = False
     team_user: list = []
@@ -515,7 +515,7 @@ def Battle(chosen_pokemon):
                 menu_choice = battle_menu_moves(team_user, active_user, team_foe, active_foe)
                 battle_status = 0
                 if menu_choice != -1:
-                    attacking_output = Attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+                    attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
                     attacking_order = [attacking_output[0], attacking_output[1]]
                     attacks = [attacking_output[2], attacking_output[3]]
                     for attacker in attacking_order:
@@ -528,7 +528,7 @@ def Battle(chosen_pokemon):
                             team_foe.pop(active_foe)
                             if team_foe: active_foe = random.randint(0, len(team_foe))
                             else: battle_status = 0
-                        attack_output = Attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+                        attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
                         print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
                         team_user = attack_output[0]
                         team_foe = attack_output[1]
@@ -536,41 +536,41 @@ def Battle(chosen_pokemon):
                 menu_choice = battle_menu_team(team_user, active_user)
                 if menu_choice != -1:
                     active_user = menu_choice
-                    attacking_output = Attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+                    attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
                     attacking_order = [attacking_output[0], attacking_output[1]]
-                    attack_output = Attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
+                    attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
                     team_user = attack_output[0]
                     team_foe = attack_output[1]
                 battle_status = 0
 
         else: endCombat = True
 
-def Load_images(to_build):
+def load_images(to_build):
     images_list: list = []
     for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'images')):
         if filename.startswith(to_build + '_'):
             images_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__)+'\\images', filename).replace('/', '\\')))
     return images_list
 
-def Load_poke_sprites_tiny():
+def load_poke_sprites_tiny():
     sprites_list: list = []
     for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny').replace('/', '\\')):
         sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/pokemon/tiny', filename).replace('/', '\\')))
     return sprites_list
 
-def Load_poke_sprites_big(view):
+def load_poke_sprites_big(view):
     sprites_list: list = []
     for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/big/' + view).replace('/', '\\')):
         sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/pokemon/big/' + view, filename).replace('/', '\\')))
     return sprites_list
 
-def Load_type_sprites(size):
+def load_type_sprites(size):
     sprites_list: list = []
     for filename in os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/types/' + size).replace('/', '\\')):
         sprites_list.append(pygame.image.load(os.path.join(os.path.dirname(__file__) + '/sprites/types/' + size, filename).replace('/', '\\')))
     return sprites_list
 
-def Playlist_music(SONG_END):
+def playlist_music(SONG_END):
     pygame.mixer.music.set_endevent(SONG_END)
     song_rel_path = os.path.join(os.path.dirname(__file__), 'music/song_' + str(random.randint(1,5)) + '.mp3')
     pygame.mixer.music.load(song_rel_path)
@@ -580,7 +580,7 @@ def Playlist_music(SONG_END):
     pygame.mixer.music.set_volume(0.35)
     return pygame.mixer.music
 
-def Blit_menu(screen, resources): 
+def blit_menu(screen, resources): 
     counter = 0
     screen.fill((255, 255, 255))
     for image in resources['images_menu']: 
@@ -591,7 +591,7 @@ def Blit_menu(screen, resources):
     screen.blit(resources['font_roboto_medium_20'].render("Héctor Álvarez Fernández, CDAV UDC, 2020", True, (128,128,128)), [970, 743])
     return screen
 
-def Blit_builder(screen, resources, team, active): 
+def blit_builder(screen, resources, team, active): 
     counter = 1
     counter_i = 0
     counter_j = 0
@@ -658,28 +658,57 @@ def Blit_builder(screen, resources, team, active):
         counter_j += 1
     return screen
 
-def Main():
+def check_buttons(game_state, screen, resources, mouse_pos): 
+    resources_ = []
+    buttons_list: list = []
+    sizes: list = [582,131]
+    positions: list = [731, 117]
+    counter = 1
+    while counter < len(resources['images_menu']): 
+        resources_.append(resources['images_menu'][counter])
+        counter += 1
+    counter = 0
+    if game_state == 0: 
+        for img in resources_: 
+            buttons_list.append(img.get_rect())
+            print(buttons_list)
+            buttons_list[counter][0] = positions[0]
+            buttons_list[counter][1] = positions[1] + sizes[1]*(counter-1)
+            buttons_list[counter][2] = positions[0] + sizes[0]
+            buttons_list[counter][3] = positions[1] + sizes[1]*(counter)
+            print(buttons_list)
+            counter += 1
+        counter = 0
+        while counter < len(buttons_list):
+            if buttons_list[counter].collidepoint(mouse_pos):
+                print('collided on', counter)
+                game_state = counter
+            counter += 1
+    return game_state
+
+
+def main():
     pygame.init()
     pygame.display.set_caption("Pokémon Exercitium")
     pygame.display.set_icon(pygame.image.load(os.path.dirname(__file__) + '/images/display_icon.png'))
     screen = pygame.display.set_mode((1366, 768))
     resources: dict = {
-        'images_menu': Load_images('menu'),
-        'images_builder': Load_images('builder'),
+        'images_menu': load_images('menu'),
+        'images_builder': load_images('builder'),
         'images_battle': [],
         'font_roboto_medium_20': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 20),
         'font_roboto_medium_24': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 24),
         'font_roboto_medium_28': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 28),
-        'sprites_poke_tiny': Load_poke_sprites_tiny(),
-        'sprites_poke_big_front': Load_poke_sprites_big('front'),
-        'sprites_poke_big_back': Load_poke_sprites_big('back'),
-        'sprites_types_tiny': Load_type_sprites('tiny'),
-        'sprites_types_big': Load_type_sprites('big')
+        'sprites_poke_tiny': load_poke_sprites_tiny(),
+        'sprites_poke_big_front': load_poke_sprites_big('front'),
+        'sprites_poke_big_back': load_poke_sprites_big('back'),
+        'sprites_types_tiny': load_type_sprites('tiny'),
+        'sprites_types_big': load_type_sprites('big')
     }
 
     # PyGame music
     SONG_END = pygame.USEREVENT + 1
-    pygame.mixer.music = Playlist_music(SONG_END)
+    pygame.mixer.music = playlist_music(SONG_END)
     pygame.mixer.music.play()
 
     # Game logic variables
@@ -690,10 +719,13 @@ def Main():
 
     while True:
       # Drawing on screen
-        if game_state == 0:
-            screen = Blit_menu(screen, resources)
+        if game_state == 0 or game_state == 2 or game_state == 3:
+            screen = blit_menu(screen, resources)
         if game_state == 1: 
-            screen = Blit_builder(screen, resources, team, active)
+            screen = blit_builder(screen, resources, team, active)
+        if game_state == 4:
+            pygame.quit()
+            sys.exit(0)
 
       # Check events
         for event in pygame.event.get():
@@ -701,14 +733,12 @@ def Main():
                 pygame.quit()
                 sys.exit(0)
             if event.type == SONG_END:
-                pygame.mixer.music = Playlist_music(SONG_END)
+                pygame.mixer.music = playlist_music(SONG_END)
                 pygame.mixer.music.play()
             if event.type == pygame.MOUSEBUTTONUP: 
                 mouse_pos = pygame.mouse.get_pos()
-                if game_state == 0:
-                    if resources['images_menu'][1].rect.collidepoint(mouse_pos): 
-                        game_state = 1
-                    rect = menu_button_builder_path.get_rect()
+                game_state = check_buttons(game_state, screen, resources, mouse_pos)
+                
                 
             #         rect[0] += 731
             #         rect[1] += 117
@@ -750,4 +780,4 @@ def Main():
     
 
 if __name__ == '__main__':
-   Main()
+   main()
