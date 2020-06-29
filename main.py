@@ -605,16 +605,21 @@ def blit_builder(screen, resources, team, active):
             screen.blit(image, [0, 0])
         elif resources['images_builder'].index(image) == 1:  # render party title
             screen.blit(image, [18, 18])
-        elif resources['images_builder'].index(image) == 2:  # render party buttons
+        elif resources['images_builder'].index(image) == 2:  # render party buttons active
             while counter_i < 6: 
-                if team[counter_i] != 0:
-                    if counter_i == active: 
-                        screen.blit(image, [30, 95 + 110*counter_i])
-                    counter_i += 1
-                else: counter_i += 6
+                if counter_i == active: 
+                    screen.blit(image, [30, 95 + 110*counter_i])
+                counter_i += 1
             counter_i = 0
+        elif resources['images_builder'].index(image) == 5:  # render party buttons inactive
+            while counter_i < 6: 
+                if counter_i != active: 
+                    screen.blit(image, [18, 95 + 110*counter_i])
+                counter_i += 1
         elif resources['images_builder'].index(image) == 3:  # render box titles
             screen.blit(image, [780, 55])
+        elif resources['images_builder'].index(image) == 6:  # render back arrow
+            screen.blit(image, [1280, 680])
         elif resources['images_builder'].index(image) == 4:  # render box buttons
             while counter_j < 5: 
                 while counter_i < 6: 
@@ -624,16 +629,9 @@ def blit_builder(screen, resources, team, active):
                     else: counter_i += 1
                 counter_i = 0
                 counter_j += 1
-        elif resources['images_builder'].index(image) == 5:  # render party buttons
-            while counter_i < 6: 
-                if team[counter_i] != 0:
-                    if counter_i != active: 
-                        screen.blit(image, [18, 95 + 110*counter_i])
-                    counter_i += 1
-                else: counter_i += 6
         counter_i = 0
         counter_j = 0
-    with open(os.path.join(dir_py, rel_path), 'r') as f_pokedex:
+    with open(os.path.join(dir_py, rel_path), 'r') as f_pokedex:        # blits button content
         dic_pokedex = json.load(f_pokedex)
         for id in team:
             if id != 0:
@@ -658,33 +656,98 @@ def blit_builder(screen, resources, team, active):
         counter_j += 1
     return screen
 
+def blit_guide(screen, resources):
+    counter = 0
+    screen.fill((255, 255, 255))
+    for image in resources['images_guide']: 
+        if counter != 2:
+            screen.blit(image, [0, 0])
+        else:
+            screen.blit(image, [50, 680])
+        counter += 1
+    screen.blit(resources['font_roboto_medium_20'].render("Pokémon Exercitium is a fan-made battle simulator based on Nintendo's Pokémon.", True, (80,80,80)), [580, 240])
+    screen.blit(resources['font_roboto_medium_20'].render("Mechanic's are a simplified version of those we can find in the Pokémon Core Series. ", True, (80,80,80)), [580, 290])
+    screen.blit(resources['font_roboto_medium_20'].render("The Pokédex is reduced to 28 monsters, all from the first generation. ", True, (80,80,80)), [580, 315])
+    screen.blit(resources['font_roboto_medium_20'].render("Levels and IVs are maxed-out and EVs equally balanced. ", True, (80,80,80)), [580, 340])
+    screen.blit(resources['font_roboto_medium_20'].render("The moveset of each Pokémon is predefined. ", True, (80,80,80)), [580, 365])
+    screen.blit(resources['font_roboto_medium_20'].render("There is a pre-made team, but it can be modified in the Team Builder menu. ", True, (80,80,80)), [580, 415])
+    screen.blit(resources['font_roboto_medium_20'].render("Once ready, hit the Combat button and do your best!", True, (80,80,80)), [580, 465])
+    return screen
+
+def remove_duplicates(list):
+    clean_list = [] 
+    for i in list: 
+        if i not in clean_list: 
+            clean_list.append(i) 
+    while len(clean_list) < 6:
+        clean_list.append(0)
+    return clean_list 
+
 def check_buttons(game_state, screen, resources, mouse_pos): 
     resources_ = []
     buttons_list: list = []
-    sizes: list = [582,131]
-    positions: list = [731, 117]
-    counter = 1
-    while counter < len(resources['images_menu']): 
-        resources_.append(resources['images_menu'][counter])
-        counter += 1
+    sizes: list = [131,110]
+    positions: list = [731, 117, 30, 95, 672, 160, 1280, 680]
     counter = 0
+    counter_i = 0
+    counter_j = 0
+    returned_value: int = 0
     if game_state == 0: 
+        counter += 1
+        while counter < len(resources['images_menu']):       # load list in local variable
+            resources_.append(resources['images_menu'][counter])
+            counter += 1
+        counter = 0
         for img in resources_: 
             buttons_list.append(img.get_rect())
-            print(buttons_list)
             buttons_list[counter][0] = positions[0]
-            buttons_list[counter][1] = positions[1] + sizes[1]*(counter-1)
-            buttons_list[counter][2] = positions[0] + sizes[0]
-            buttons_list[counter][3] = positions[1] + sizes[1]*(counter)
-            print(buttons_list)
+            buttons_list[counter][1] = positions[1] + sizes[0]*(counter)
             counter += 1
         counter = 0
         while counter < len(buttons_list):
             if buttons_list[counter].collidepoint(mouse_pos):
-                print('collided on', counter)
-                game_state = counter
+                returned_value = counter + 1
             counter += 1
-    return game_state
+    elif game_state == 1:
+        resources_.append(resources['images_builder'][2])
+        resources_.append(resources['images_builder'][4])
+        resources_.append(resources['images_builder'][6])
+        counter = 0
+        while counter < 6: 
+            buttons_list.append(resources_[0].get_rect())
+            buttons_list[counter][0] = positions[2]
+            buttons_list[counter][1] = positions[3] + sizes[1]*(counter)
+            counter += 1
+        counter = 0
+        while counter < 28: 
+            buttons_list.append(resources_[1].get_rect())
+            counter += 1
+        counter = 0
+        buttons_list.append(resources_[2].get_rect())
+        buttons_list[-1][0] = positions[6]
+        buttons_list[-1][1] = positions[7]
+        while counter_j < 5: 
+            while counter_i < 6: 
+                buttons_list[6 + counter][0] = positions[4] + sizes[1]*counter_i
+                buttons_list[6 + counter][1] = positions[5] + sizes[1]*counter_j
+                if counter_j == 4 and counter_i == 3:
+                    counter_i += 4
+                    counter += 1
+                else: 
+                    counter_i += 1
+                    counter += 1
+            counter_i = 0
+            counter_j += 1
+        counter = 0
+        while counter < len(buttons_list):
+            if buttons_list[counter].collidepoint(mouse_pos):
+                returned_value = counter
+            counter += 1
+    elif game_state == 3:
+        buttons_list.append(resources['images_guide'][2].get_rect())
+        if buttons_list[0].collidepoint(mouse_pos):
+            returned_value = 0
+    return returned_value
 
 
 def main():
@@ -692,10 +755,13 @@ def main():
     pygame.display.set_caption("Pokémon Exercitium")
     pygame.display.set_icon(pygame.image.load(os.path.dirname(__file__) + '/images/display_icon.png'))
     screen = pygame.display.set_mode((1366, 768))
+    with open(os.path.join(os.path.dirname(__file__), 'data/pokedex.json'), 'r') as f_pokedex:
+        dic_pokedex = json.load(f_pokedex)
     resources: dict = {
         'images_menu': load_images('menu'),
         'images_builder': load_images('builder'),
         'images_battle': [],
+        'images_guide': load_images('guide'),
         'font_roboto_medium_20': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 20),
         'font_roboto_medium_24': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 24),
         'font_roboto_medium_28': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 28),
@@ -714,15 +780,19 @@ def main():
     # Game logic variables
     i: int = 0
     game_state: int = 0
+    ids_list = []
     team: list = [91, 9, 94, 131, 0, 0]
     active: int = 0
 
     while True:
       # Drawing on screen
-        if game_state == 0 or game_state == 2 or game_state == 3:
+        if game_state == 0:
             screen = blit_menu(screen, resources)
+            active = 4
         if game_state == 1: 
             screen = blit_builder(screen, resources, team, active)
+        if game_state == 3: 
+            screen = blit_guide(screen, resources)
         if game_state == 4:
             pygame.quit()
             sys.exit(0)
@@ -737,39 +807,24 @@ def main():
                 pygame.mixer.music.play()
             if event.type == pygame.MOUSEBUTTONUP: 
                 mouse_pos = pygame.mouse.get_pos()
-                game_state = check_buttons(game_state, screen, resources, mouse_pos)
-                
-                
-            #         rect[0] += 731
-            #         rect[1] += 117
-            #         rect[2] += 731
-            #         rect[3] += 117
-            #         if rect.collidepoint(pos):
-            #             game_state = 1
-            #         else:
-            #             rect = menu_button_combat_path.get_rect()
-            #             rect[0] += 731
-            #             rect[1] += 248
-            #             rect[2] += 731
-            #             rect[3] += 248
-            #             if rect.collidepoint(pos):
-            #                 game_state = 2
-            #             else: 
-            #                 rect = menu_button_guide_path.get_rect()
-            #                 rect[0] += 731
-            #                 rect[1] += 379
-            #                 rect[2] += 731
-            #                 rect[3] += 379
-            #                 if rect.collidepoint(pos):
-            #                     game_state = 3
-            #                 else: 
-            #                     rect = menu_button_quit_path.get_rect()
-            #                     rect[0] += 731
-            #                     rect[1] += 510
-            #                     rect[2] += 731
-            #                     rect[3] += 510
-            #                     if rect.collidepoint(pos):
-            #                         game_state = 4
+                button_pressed = check_buttons(game_state, screen, resources, mouse_pos)
+                if game_state == 0 or game_state == 3: 
+                    game_state = button_pressed
+                elif game_state == 1:
+                    if button_pressed < 6:
+                        active = button_pressed
+                    elif button_pressed == 34:
+                        game_state = 0
+                    elif button_pressed > 5:
+                        button_pressed -= 5
+                        for i in dic_pokedex:
+                            ids_list.append(dic_pokedex[i]['pid'])
+                        team[active] = int(dic_pokedex[str(ids_list[button_pressed])]['pid'])
+                        for i in range(len(team)): 
+                            if team[i] == 0: 
+                                team.append(team[i])
+                                del(team[i])
+                        team = remove_duplicates(team)
             if game_state == 4:
                 pygame.quit()
                 sys.exit(0)
