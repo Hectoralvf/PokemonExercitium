@@ -683,7 +683,37 @@ def remove_duplicates(list):
         clean_list.append(0)
     return clean_list 
 
-def check_buttons(game_state, screen, resources, mouse_pos): 
+def blit_battle_common(screen, resources, dic_pokedex, sprites_list_front, sprites_list_back, team_user_ids, active_user):
+    screen.fill((255, 255, 255))
+    for image in resources['images_battle']: 
+        if resources['images_battle'].index(image) < 3:
+            screen.blit(image, [0, 0])
+        else: screen.blit(image, [0, 0])
+    index_ = str(team_user_ids[active_user]) + '.png'
+    if len(index_) < 7: 
+        index_ = '0' + index_
+    if len(index_) < 7: 
+        index_ = '0' + index_
+    screen.blit(resources['sprites_poke_big_back'][sprites_list_back.index(index_)], [-50, 200])
+    return screen
+
+
+def blit_battle_0(screen, resources, dic_pokedex, team_user_ids, active_user):
+    return screen
+
+def battle_gui(screen, resources, team_user_ids, active_user): 
+    end_battle: bool = False
+    battle_status: int = 0
+    sprites_list_front = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/big/front/'))
+    sprites_list_back = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/big/back/'))
+    with open(os.path.join(os.path.dirname(__file__), 'data/pokedex.json'), 'r') as f_pokedex:
+        dic_pokedex = json.load(f_pokedex)
+    screen = blit_battle_common(screen, resources, dic_pokedex, sprites_list_front, sprites_list_back, team_user_ids, active_user)
+    if battle_status == 0: 
+        screen = blit_battle_0(screen, resources, dic_pokedex, team_user_ids, active_user)
+    return [end_battle, screen, battle_status]
+
+def check_buttons(game_status, screen, resources, mouse_pos): 
     resources_ = []
     buttons_list: list = []
     sizes: list = [131,110]
@@ -692,7 +722,7 @@ def check_buttons(game_state, screen, resources, mouse_pos):
     counter_i = 0
     counter_j = 0
     returned_value: int = 0
-    if game_state == 0: 
+    if game_status == 0: 
         counter += 1
         while counter < len(resources['images_menu']):       # load list in local variable
             resources_.append(resources['images_menu'][counter])
@@ -708,7 +738,7 @@ def check_buttons(game_state, screen, resources, mouse_pos):
             if buttons_list[counter].collidepoint(mouse_pos):
                 returned_value = counter + 1
             counter += 1
-    elif game_state == 1:
+    elif game_status == 1:
         resources_.append(resources['images_builder'][2])
         resources_.append(resources['images_builder'][4])
         resources_.append(resources['images_builder'][6])
@@ -743,7 +773,7 @@ def check_buttons(game_state, screen, resources, mouse_pos):
             if buttons_list[counter].collidepoint(mouse_pos):
                 returned_value = counter
             counter += 1
-    elif game_state == 3:
+    elif game_status == 3:
         buttons_list.append(resources['images_guide'][2].get_rect())
         if buttons_list[0].collidepoint(mouse_pos):
             returned_value = 0
@@ -760,7 +790,7 @@ def main():
     resources: dict = {
         'images_menu': load_images('menu'),
         'images_builder': load_images('builder'),
-        'images_battle': [],
+        'images_battle': load_images('battle'),
         'images_guide': load_images('guide'),
         'font_roboto_medium_20': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 20),
         'font_roboto_medium_24': pygame.font.Font(os.path.join(os.path.dirname(__file__), 'fonts/roboto_medium.ttf'), 24),
@@ -773,27 +803,35 @@ def main():
     }
 
     # PyGame music
-    SONG_END = pygame.USEREVENT + 1
-    pygame.mixer.music = playlist_music(SONG_END)
-    pygame.mixer.music.play()
+    # SONG_END = pygame.USEREVENT + 1
+    # pygame.mixer.music = playlist_music(SONG_END)
+    # pygame.mixer.music.play()
 
     # Game logic variables
     i: int = 0
-    game_state: int = 0
+    game_status: int = 0
+    functions_output: None
     ids_list = []
     team: list = [91, 9, 94, 131, 0, 0]
     active: int = 0
 
     while True:
+        functions_output = None
       # Drawing on screen
-        if game_state == 0:
+        if game_status == 0:
             screen = blit_menu(screen, resources)
             active = 4
-        if game_state == 1: 
+        if game_status == 1: 
             screen = blit_builder(screen, resources, team, active)
-        if game_state == 3: 
+        if game_status == 2:
+            active = 0
+            functions_output = battle_gui(screen, resources, team, active)
+            if functions_output[0] == False: 
+                screen = functions_output[1]
+            else: game_status = 0
+        if game_status == 3: 
             screen = blit_guide(screen, resources)
-        if game_state == 4:
+        if game_status == 4:
             pygame.quit()
             sys.exit(0)
 
@@ -802,30 +840,31 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit(0)
-            if event.type == SONG_END:
-                pygame.mixer.music = playlist_music(SONG_END)
-                pygame.mixer.music.play()
+            # if event.type == SONG_END:
+            #     pygame.mixer.music = playlist_music(SONG_END)
+            #     pygame.mixer.music.play()
             if event.type == pygame.MOUSEBUTTONUP: 
+                print(resources['sprites_poke_big_back'])
                 mouse_pos = pygame.mouse.get_pos()
-                button_pressed = check_buttons(game_state, screen, resources, mouse_pos)
-                if game_state == 0 or game_state == 3: 
-                    game_state = button_pressed
-                elif game_state == 1:
-                    if button_pressed < 6:
-                        active = button_pressed
-                    elif button_pressed == 34:
-                        game_state = 0
-                    elif button_pressed > 5:
-                        button_pressed -= 5
+                functions_output = check_buttons(game_status, screen, resources, mouse_pos)
+                if game_status == 0 or game_status == 3: 
+                    game_status = functions_output
+                elif game_status == 1:
+                    if functions_output < 6:
+                        active = functions_output
+                    elif functions_output == 34:
+                        game_status = 0
+                    elif functions_output > 5:
+                        functions_output -= 5
                         for i in dic_pokedex:
                             ids_list.append(dic_pokedex[i]['pid'])
-                        team[active] = int(dic_pokedex[str(ids_list[button_pressed])]['pid'])
+                        team[active] = int(dic_pokedex[str(ids_list[functions_output])]['pid'])
                         for i in range(len(team)): 
                             if team[i] == 0: 
                                 team.append(team[i])
                                 del(team[i])
                         team = remove_duplicates(team)
-            if game_state == 4:
+            if game_status == 4:
                 pygame.quit()
                 sys.exit(0)
 
