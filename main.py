@@ -799,7 +799,7 @@ def check_buttons(game_status, screen, resources, mouse_pos, combat):
     resources_ = []
     buttons_list: list = []
     sizes: list = [131, 110, 100]
-    positions: list = [731, 117, 30, 95, 672, 160, 1280, 680, 968, 660]
+    positions: list = [731, 117, 30, 95, 672, 160, 1280, 680, 968, 660, 50, 680]
     counter = 0
     counter_i = 0
     counter_j = 0
@@ -894,11 +894,14 @@ def check_buttons(game_status, screen, resources, mouse_pos, combat):
                 counter += 1
     elif game_status == 3:
         buttons_list.append(resources['images_guide'][2].get_rect())
+        buttons_list[0][0] = positions[10]
+        buttons_list[0][1] = positions[11]
         if buttons_list[0].collidepoint(mouse_pos):
             returned_value = 0
     return returned_value
 
 def main():
+    pygame.mixer.pre_init(44100, 16, 2, 4096)
     pygame.init()
     pygame.display.set_caption("Pokémon Exercitium")
     pygame.display.set_icon(pygame.image.load(os.path.dirname(__file__) + '/images/display_icon.png'))
@@ -922,6 +925,7 @@ def main():
     # PyGame music
     SONG_END = pygame.USEREVENT + 1
     pygame.mixer.music = playlist_music(SONG_END)
+    pygame.mixer.Channel(0).set_volume(0.5)
     pygame.mixer.music.play()
 
     # Game logic variables
@@ -970,13 +974,14 @@ def main():
             if event.type == pygame.MOUSEBUTTONUP: 
                 mouse_pos = pygame.mouse.get_pos()
                 functions_output = check_buttons(game_status, screen, resources, mouse_pos, combat)
-                if game_status == 0 or game_status == 3: 
+                pygame.mixer.Channel(0).play(pygame.mixer.Sound('sounds/effects/click.ogg'), maxtime=600)
+                if (game_status == 0 or game_status == 3) and functions_output != None: 
                     game_status = functions_output
                     if game_status == 2: 
                         combat['team_user_objs'] = build_team_user(combat['team_user_ids'])
                         combat['team_foe_ids'] = build_team_foe(combat['team_user_ids'])[0]
                         combat['team_foe_objs'] = build_team_foe(combat['team_user_ids'])[1]
-                elif game_status == 1:
+                elif game_status == 1 and functions_output != None:
                     if functions_output < 6:
                         combat['active_user'] = functions_output
                     elif functions_output == 34:
