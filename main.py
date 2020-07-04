@@ -24,6 +24,7 @@ class Move():
             self.accuracy = dic_movedex[move_id]['accuracy']
             self.priority = dic_movedex[move_id]['priority']
             self.pps = dic_movedex[move_id]['pps']
+            self.max_pps = dic_movedex[move_id]['pps']
             self.stats_user = dic_movedex[move_id]['stats_user']
             self.stats_foe = dic_movedex[move_id]['stats_foe']
             self.status_user = dic_movedex[move_id]['status_user']
@@ -747,7 +748,10 @@ def blit_battle_0(screen, resources):
     return screen
 
 def blit_battle_1(screen, resources, combat):
-    #counter = 1
+    counter = 1
+    dic_pokedex: None
+    sprites_list = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny/'))
+    types_list = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/types/tiny/'))
     alive = 0
     for i in combat['team_user_objs']: 
         if i.ko == False:
@@ -756,8 +760,25 @@ def blit_battle_1(screen, resources, combat):
         if resources['images_battle'].index(image) == 6:
             screen.blit(image, [968, 660])
         elif resources['images_battle'].index(image) == 7:
-            for i in range(alive): 
+            for i in range(alive - 1): 
                 screen.blit(image, [968, 660 - 100*(i + 1)])
+    with open(os.path.join(os.path.dirname(__file__), 'data/pokedex.json'), 'r') as f_pokedex:        # blits button content
+        dic_pokedex = json.load(f_pokedex)
+    for i in combat['team_user_ids']:
+        if combat['team_user_ids'].index(i) != combat['active_user']:
+            if i != 0:
+                index_ = str(i) + '.png'
+                if len(index_) < 7: 
+                    index_ = '0' + index_
+                if len(index_) < 7: 
+                    index_ = '0' + index_
+                screen.blit(resources['sprites_poke_tiny'][sprites_list.index(index_)], [975, 680 - 100*counter])
+                screen.blit(resources['font_roboto_medium_24'].render(dic_pokedex[str(i)]['name'], True, (90,90,90)), [1050, 680 - 100*counter])
+                screen.blit(resources['font_roboto_medium_28'].render(str(combat['team_user_objs'][combat['team_user_ids'].index(i)].current_hp) + '/' + str(combat['team_user_objs'][combat['team_user_ids'].index(i)].HP), True, (200,200,200)), [1215, 700 - 100*counter])
+                screen.blit(resources['sprites_types_tiny'][types_list.index(dic_pokedex[str(i)]['mainType'] + '.png')], [1050, 710 - 100*counter])
+                if dic_pokedex[str(i)]['secType'] != None: 
+                    screen.blit(resources['sprites_types_tiny'][types_list.index(dic_pokedex[str(i)]['secType'] + '.png')], [1060 + resources['sprites_types_tiny'][types_list.index(dic_pokedex[str(i)]['mainType'] + '.png')].get_width(), 710 - 100*counter])
+            counter += 1
     return screen
 
 def battle_gui(screen, resources, combat): 
@@ -768,7 +789,9 @@ def battle_gui(screen, resources, combat):
     screen = blit_battle_common(screen, resources, dic_pokedex, sprites_list_front, sprites_list_back, combat)
     if combat['battle_status'] == 0: 
         screen = blit_battle_0(screen, resources)
-    if combat['battle_status'] == 1: 
+    elif combat['battle_status'] == 1: 
+        screen = blit_battle_1(screen, resources, combat)
+    elif combat['battle_status'] == 2: 
         screen = blit_battle_1(screen, resources, combat)
     return screen
 
@@ -780,7 +803,7 @@ def check_buttons(game_status, screen, resources, mouse_pos, combat):
     counter = 0
     counter_i = 0
     counter_j = 0
-    returned_value: int = 0
+    returned_value = None
     if game_status == 0: 
         counter += 1
         while counter < len(resources['images_menu']):       # load list in local variable
@@ -842,28 +865,32 @@ def check_buttons(game_status, screen, resources, mouse_pos, combat):
             for img in resources_: 
                 buttons_list.append(img.get_rect())
                 buttons_list[counter][0] = positions[8]
-                buttons_list[counter][1] = positions[9] - sizes[2]*(counter)
+                buttons_list[counter][1] = positions[9] - sizes[2]*counter
                 counter += 1
             counter = 0
             while counter < len(buttons_list):
                 if buttons_list[counter].collidepoint(mouse_pos):
                     returned_value = counter + 1
                 counter += 1
-        if combat['battle_status'] == 1: 
+        elif combat['battle_status'] == 1: 
             counter = 0
             while counter < 2: 
                 resources_.append(resources['images_battle'][6 + counter])
                 counter += 1
-            counter = 0
             for img in resources_: 
-                buttons_list.append(img.get_rect())
-                buttons_list[counter][0] = positions[8]
-                buttons_list[counter][1] = positions[9] - sizes[2]*(counter)
-                counter += 1
+                if resources_.index(img) == 0:
+                    buttons_list.append(img.get_rect())
+                    buttons_list[0][0] = positions[8]
+                    buttons_list[0][1] = positions[9]
+                else: 
+                    for i in range(len(combat['team_user_objs']) - 1):
+                        buttons_list.append(img.get_rect())
+                        buttons_list[i + 1][0] = positions[8]
+                        buttons_list[i + 1][1] = positions[9] - sizes[2]*(i + 1)
             counter = 0
             while counter < len(buttons_list):
                 if buttons_list[counter].collidepoint(mouse_pos):
-                    returned_value = counter + 1
+                    returned_value = counter
                 counter += 1
     elif game_status == 3:
         buttons_list.append(resources['images_guide'][2].get_rect())
@@ -893,9 +920,9 @@ def main():
         'sprites_types_big': load_type_sprites('big')
     }
     # PyGame music
-    # SONG_END = pygame.USEREVENT + 1
-    # pygame.mixer.music = playlist_music(SONG_END)
-    # pygame.mixer.music.play()
+    SONG_END = pygame.USEREVENT + 1
+    pygame.mixer.music = playlist_music(SONG_END)
+    pygame.mixer.music.play()
 
     # Game logic variables
     i: int = 0
@@ -922,7 +949,6 @@ def main():
         if game_status == 1: 
             screen = blit_builder(screen, resources, combat['team_user_ids'], combat['active_user'])
         if game_status == 2:
-            combat['active_user'] = 0
             functions_output = battle_gui(screen, resources, combat)
             if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']): 
                 screen = functions_output
@@ -938,9 +964,9 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit(0)
-            # if event.type == SONG_END:
-            #     pygame.mixer.music = playlist_music(SONG_END)
-            #     pygame.mixer.music.play()
+            if event.type == SONG_END:
+                pygame.mixer.music = playlist_music(SONG_END)
+                pygame.mixer.music.play()
             if event.type == pygame.MOUSEBUTTONUP: 
                 mouse_pos = pygame.mouse.get_pos()
                 functions_output = check_buttons(game_status, screen, resources, mouse_pos, combat)
@@ -954,6 +980,7 @@ def main():
                     if functions_output < 6:
                         combat['active_user'] = functions_output
                     elif functions_output == 34:
+                        combat['active_user'] = 0
                         game_status = 0
                     elif functions_output > 5:
                         functions_output -= 5
@@ -966,14 +993,23 @@ def main():
                                 del(combat['team_user_ids'][i])
                         combat['team_user_ids'] = remove_duplicates(combat['team_user_ids'])
                 elif game_status == 2: 
-                    if combat['battle_status'] == 0: 
+                    if combat['battle_status'] == 0 and functions_output != None: 
                         if functions_output == 1: 
                             combat['team_user_objs'] = []
                             combat['team_foe_objs'] = []
                             game_status = 0
                         elif functions_output == 2 or functions_output == 3: 
                             combat['battle_status'] = functions_output - 1
-                    print(combat['battle_status'])
+                    elif combat['battle_status'] == 1 and functions_output != None:
+                        if functions_output == 0: 
+                            combat['battle_status'] = 0
+                        else: 
+                            if functions_output <= combat['active_user']: 
+                                functions_output -= 1
+                            if combat['team_user_objs'][functions_output].ko == False: 
+                                combat['active_user'] = functions_output
+                                combat['battle_status'] = 0
+                                
 
             if game_status == 4:
                 pygame.quit()
