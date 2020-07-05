@@ -1,0 +1,5 @@
+song_1: Mikel, GameChops - Hau'oli City
+song_2: Mikel, GameChops - National Park
+song_3: Mikel, GameChops - Pokémon Gym
+song_4: Mikel, GameChops - Pokémon League
+song_5: Mikel, GameChops - Trainer Battle
