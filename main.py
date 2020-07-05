@@ -220,6 +220,14 @@ def attacking_both(combat, attack_user):
         'user_shift': False, 
         'shifts_to': 0}
 
+def attacking_shift(combat, chosen_pokemon):
+    random_number: int
+    attack_foe = choose_attack_foe()
+    return {'attacks': [0, attack_foe],
+        'user_first': True, 
+        'user_shift': True, 
+        'shifts_to': chosen_pokemon}
+
 def attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     damage: int = 0
     list_types: list = ["bug", "dark", "dragon", "electric", "fairy", "fighting","fire","flying","ghost","grass","ground","ice","normal","poison","psychic","rock","steel","water"]
@@ -1084,7 +1092,7 @@ def main():
                             if functions_output <= combat['active_user']: 
                                 functions_output -= 1
                             if combat['team_user_objs'][functions_output].ko == False: 
-                                combat['active_user'] = functions_output
+                                combat['attacking'] = attacking_shift(combat, functions_output)
                                 combat['battle_status'] = 0
                     elif combat['battle_status'] == 2 and functions_output != None:
                         if functions_output == 0: 
@@ -1093,7 +1101,6 @@ def main():
                             functions_output -= 1
                             if combat['team_user_objs'][combat['active_user']].moveset[functions_output].pps > 0: 
                                 combat['attacking'] = attacking_both(combat, functions_output)
-                                print(combat['attacking'])
                                 combat['battle_status'] = 0
                                 
 
