@@ -170,34 +170,55 @@ def battle_dead_team(team_user, active_user):
     menu_choice = int(input())
     return menu_choice
 
-def attacking_order(team_user, active_user, team_foe, active_foe, attack_user):
+def choose_attack_foe():
+    random_number = random.randint(1, 16000)   #random with small ranges doesn't feel really random
+    if random_number < 4001: 
+        return 0
+    elif random_number < 8001:
+        return 1
+    elif random_number < 12001:
+        return 2
+    else: return 3
+
+def attacking_both(combat, attack_user):
     random_number: int
-    attack_foe = random.randint(1, 16000)   #random with small ranges doesn't feel really random
-    if attack_foe < 4001: 
-        attack_foe = 0
-    elif attack_foe < 8001:
-        attack_foe = 1
-    elif attack_foe < 12001:
-        attack_foe = 2
-    else: attack_foe = 3
-    if team_user[active_user].moveset[attack_user].priority < team_foe[active_foe].moveset[attack_foe].priority: 
-        return (1, 0, attack_user, attack_foe)
-    elif team_user[active_user].moveset[attack_user].priority > team_foe[active_foe].moveset[attack_foe].priority: 
-        return (0, 1, attack_user, attack_foe)
-    elif team_user[active_user].moveset[attack_user].priority == team_foe[active_foe].moveset[attack_foe].priority: 
-        if 3 in team_user[active_user].status_list:
-            team_user[active_user].current_speed = team_user[active_user].current_speed*0.5
-        if 3 in team_foe[active_foe].status_list:
-            team_foe[active_foe].current_speed = team_foe[active_foe].current_speed*0.5
-        if team_user[active_user].current_speed > team_foe[active_foe].current_speed: 
-            return (0, 1, attack_user, attack_foe)
-        elif team_user[active_user].current_speed < team_foe[active_foe].current_speed: 
-            return (1, 0, attack_user, attack_foe)
-        elif team_user[active_user].current_speed == team_foe[active_foe].current_speed: 
+    attack_foe = choose_attack_foe()
+    if combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority < combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
+        return {'attacks': [attack_user, attack_foe],
+        'user_first': False, 
+        'user_shift': False, 
+        'shifts_to': 0}
+    elif combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority > combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
+        return {'attacks': [attack_user, attack_foe],
+        'user_first': True, 
+        'user_shift': False, 
+        'shifts_to': 0}
+    elif combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority == combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
+        if 3 in combat['team_user_objs'][combat['active_user']].status_list:
+            combat['team_user_objs'][combat['active_user']].current_speed = combat['team_user_objs'][combat['active_user']].current_speed*0.5
+        if 3 in combat['team_foe_objs'][combat['active_foe']].status_list:
+            combat['team_foe_objs'][combat['active_foe']].current_speed = combat['team_foe_objs'][combat['active_foe']].current_speed*0.5
+        if combat['team_user_objs'][combat['active_user']].current_speed > combat['team_foe_objs'][combat['active_foe']].current_speed: 
+            return {'attacks': [attack_user, attack_foe],
+        'user_first': True, 
+        'user_shift': False, 
+        'shifts_to': 0}
+        elif combat['team_user_objs'][combat['active_user']].current_speed < combat['team_foe_objs'][combat['active_foe']].current_speed: 
+            return {'attacks': [attack_user, attack_foe],
+        'user_first': False, 
+        'user_shift': False, 
+        'shifts_to': 0}
+        elif combat['team_user_objs'][combat['active_user']].current_speed == combat['team_foe_objs'][combat['active_foe']].current_speed: 
             random_number = random.randint(1, 6000)
             if random_number < 3001:
-                return (1, 0, attack_user, attack_foe)
-            else: return (0, 1, attack_user, attack_foe)
+                return {'attacks': [attack_user, attack_foe],
+        'user_first': True, 
+        'user_shift': False, 
+        'shifts_to': 0}
+            else: return {'attacks': [attack_user, attack_foe],
+        'user_first': False, 
+        'user_shift': False, 
+        'shifts_to': 0}
 
 def attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     damage: int = 0
@@ -493,7 +514,7 @@ def attack(types_table, team_user, active_user, team_foe, active_foe, attacker, 
         team_foe[active_foe].moveset[attacks[attacker]].spendPP()
     return [team_user, team_foe, failed, hazard]
 
-def battle(chosen_pokemon):
+def battle_old(chosen_pokemon, combat):
     i: int = 0
     endCombat: bool = False
     team_user: list = []
@@ -513,49 +534,36 @@ def battle(chosen_pokemon):
     with open(os.path.join(dir_py, rel_path), 'r') as f_types:
         types_table = json.load(f_types)
 
-    team_user = build_team_user(team_user, chosen_pokemon)
-    team_foe = build_team_foe(chosen_pokemon)[1]
+    attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+    attacking_order = [attacking_output[0], attacking_output[1]]
+    attacks = [attacking_output[2], attacking_output[3]]
+    for attacker in attacking_order:
+        if attacker == 0 and team_user[active_user].current_hp == 0:
+            team_user.pop(active_user)
+            menu_choice = battle_menu_team(team_user, active_user)
+            active_user = menu_choice
+            battle_status = 0
+        if attacker == 1 and team_foe[active_foe].current_hp == 0:
+            team_foe.pop(active_foe)
+            if team_foe: active_foe = random.randint(0, len(team_foe))
+            else: battle_status = 0
+        attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+        print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
+        team_user = attack_output[0]
+        team_foe = attack_output[1]
+    if battle_status == 2: 
+        menu_choice = battle_menu_team(team_user, active_user)
+        if menu_choice != -1:
+            active_user = menu_choice
+            attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+            attacking_order = [attacking_output[0], attacking_output[1]]
+            attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
+            team_user = attack_output[0]
+            team_foe = attack_output[1]
+        battle_status = 0
 
-    while endCombat != True:
-        if is_combat_possible(team_user, team_foe) == False:
-            battle_status = 3
-        if battle_status != 3: 
-            if battle_status == 0:
-                menu_choice = battle_menu_main(menu_choice)
-                battle_status = menu_choice
-            elif battle_status == 1: 
-                menu_choice = battle_menu_moves(team_user, active_user, team_foe, active_foe)
-                battle_status = 0
-                if menu_choice != -1:
-                    attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-                    attacking_order = [attacking_output[0], attacking_output[1]]
-                    attacks = [attacking_output[2], attacking_output[3]]
-                    for attacker in attacking_order:
-                        if attacker == 0 and team_user[active_user].current_hp == 0:
-                            team_user.pop(active_user)
-                            menu_choice = battle_menu_team(team_user, active_user)
-                            active_user = menu_choice
-                            battle_status = 0
-                        if attacker == 1 and team_foe[active_foe].current_hp == 0:
-                            team_foe.pop(active_foe)
-                            if team_foe: active_foe = random.randint(0, len(team_foe))
-                            else: battle_status = 0
-                        attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-                        print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
-                        team_user = attack_output[0]
-                        team_foe = attack_output[1]
-            elif battle_status == 2: 
-                menu_choice = battle_menu_team(team_user, active_user)
-                if menu_choice != -1:
-                    active_user = menu_choice
-                    attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-                    attacking_order = [attacking_output[0], attacking_output[1]]
-                    attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
-                    team_user = attack_output[0]
-                    team_foe = attack_output[1]
-                battle_status = 0
-
-        else: endCombat = True
+def battle(combat): 
+    pass
 
 def load_images(to_build):
     images_list: list = []
@@ -1004,7 +1012,8 @@ def main():
         'team_foe_objs': [],
         'active_foe': 0, 
         'new_battle': True,
-        'battle_status': 0
+        'battle_status': 0, 
+        'attacking': {}
     }
 
     while True:
@@ -1081,8 +1090,10 @@ def main():
                         if functions_output == 0: 
                             combat['battle_status'] = 0
                         else: 
-                            if combat['team_user_objs'][combat['active_user']].moveset[functions_output - 1].pps > 0: 
-                                print('attack', functions_output)
+                            functions_output -= 1
+                            if combat['team_user_objs'][combat['active_user']].moveset[functions_output].pps > 0: 
+                                combat['attacking'] = attacking_both(combat, functions_output)
+                                print(combat['attacking'])
                                 combat['battle_status'] = 0
                                 
 
