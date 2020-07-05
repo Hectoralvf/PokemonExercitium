@@ -138,18 +138,21 @@ def build_team_foe(chosen_pokemon):
     return [list_foe, team_foe]
 
 def is_combat_possible(team_user, team_foe):
-    count = 0
+    count_u = 0
+    count_f = 0
     for i in team_user:
         if i.ko == False:
-            count += 1
-    if count > 0:
-        count = 0
-        for i in team_foe:
-            if i.ko == False:
-                count += 1
-    if count == 0:
-        return False
-    else: return True
+            count_u += 1
+    for i in team_foe:
+        if i.ko == False:
+            count_f += 1
+    if count_u > 0 and count_f > 0:     # both teams have a usable pokemon
+        return 0
+    elif count_u > 0:       # user wins
+        return 1
+    elif count_f > 0:       # foe wins
+        return 2
+    else: return 3          # no team has a usable pokemon
 
 def battle_menu_main(menu_choice):
     menu_choice = int(input())
@@ -1014,7 +1017,7 @@ def main():
             screen = blit_builder(screen, resources, combat['team_user_ids'], combat['active_user'])
         if game_status == 2:
             functions_output = battle_gui(screen, resources, combat)
-            if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']): 
+            if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 0: 
                 screen = functions_output
             else: game_status = 0
         if game_status == 3: 
