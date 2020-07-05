@@ -22,7 +22,7 @@
     "giga_drain": {
         "name": "Giga Drain",
         "type": "grass",
-        "category": "Non-Damaging",
+        "category": "Special",
         "turns": null,
         "power": 75,
         "accuracy": 1.0,
