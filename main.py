@@ -187,12 +187,14 @@ def attacking_both(combat, attack_user):
         return {'attacks': [attack_user, attack_foe],
         'user_first': False, 
         'user_shift': False, 
-        'shifts_to': 0}
+        'shifts_to': 0,
+        'turn': 1}
     elif combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority > combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
         return {'attacks': [attack_user, attack_foe],
         'user_first': True, 
         'user_shift': False, 
-        'shifts_to': 0}
+        'shifts_to': 0,
+        'turn': 1}
     elif combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority == combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
         if 3 in combat['team_user_objs'][combat['active_user']].status_list:
             combat['team_user_objs'][combat['active_user']].current_speed = combat['team_user_objs'][combat['active_user']].current_speed*0.5
@@ -202,23 +204,27 @@ def attacking_both(combat, attack_user):
             return {'attacks': [attack_user, attack_foe],
         'user_first': True, 
         'user_shift': False, 
-        'shifts_to': 0}
+        'shifts_to': 0,
+        'turn': 1}
         elif combat['team_user_objs'][combat['active_user']].current_speed < combat['team_foe_objs'][combat['active_foe']].current_speed: 
             return {'attacks': [attack_user, attack_foe],
         'user_first': False, 
         'user_shift': False, 
-        'shifts_to': 0}
+        'shifts_to': 0,
+        'turn': 1}
         elif combat['team_user_objs'][combat['active_user']].current_speed == combat['team_foe_objs'][combat['active_foe']].current_speed: 
             random_number = random.randint(1, 6000)
             if random_number < 3001:
                 return {'attacks': [attack_user, attack_foe],
         'user_first': True, 
         'user_shift': False, 
-        'shifts_to': 0}
+        'shifts_to': 0,
+        'turn': 1}
             else: return {'attacks': [attack_user, attack_foe],
         'user_first': False, 
         'user_shift': False, 
-        'shifts_to': 0}
+        'shifts_to': 0,
+        'turn': 1}
 
 def attacking_shift(combat, chosen_pokemon):
     random_number: int
@@ -226,7 +232,8 @@ def attacking_shift(combat, chosen_pokemon):
     return {'attacks': [0, attack_foe],
         'user_first': True, 
         'user_shift': True, 
-        'shifts_to': chosen_pokemon}
+        'shifts_to': chosen_pokemon,
+        'turn': 1}
 
 def attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     damage: int = 0
@@ -411,167 +418,187 @@ def status_effect(team, active):
             team[active].status_turns[i] -= 1
     return [team, burnt, poisoned, apply_hazard]
 
-def attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
+def attack(types_table, combat, attacker):
+    if attacker == 0: 
+
+
+def attack_old(types_table, combat, attacker):
     attack_functions_output: list
     damage_dealt: int = 0
     failed = None
     hazard: list = []
 
     if attacker == 0:
-        attack_functions_output = status_effect(team_user, active_user)
-        team_user = attack_functions_output[0]
+        attack_functions_output = status_effect(combat['team_user_objs'], combat['active_user'])
+        combat['team_user_objs'] = attack_functions_output[0]
         if attack_functions_output[1] == True: 
-            print('Burning damage u')
+            print('Burning damage u'
         if attack_functions_output[2] == True: 
             print('Poison damage u')
         if attack_functions_output[3] == True: 
             hazard.append(0)
-        attack_functions_output = status_effect(team_foe, active_foe)
-        team_foe = attack_functions_output[0]
+        attack_functions_output = status_effect(combat['team_foe_objs'], combat['active_foe'])
+        combat['team_foe_objs'] = attack_functions_output[0]
         if attack_functions_output[1] == True: 
             print('Burning damage f')
         if attack_functions_output[2] == True: 
             print('Poison damage f')
         if attack_functions_output[3] == True: 
             hazard.append(1)
-        if 10 not in team_user[active_user].status_list:
-            if 31 not in team_foe[active_foe].status_list:
-                if (9 in team_user[active_user].status_list) and (random.random() < 0.33):
-                    team_user[active_user].current_hp -= (40 * 40 * team_user[active_user].current_att/team_user[active_user].current_def)/50 + 2
+        if 10 not in combat['team_user_objs'][combat['active_user']].status_list:
+            if 31 not in combat['team_foe_objs'][combat['active_foe']].status_list:
+                if (9 in combat['team_user_objs'][combat['active_user']].status_list) and (random.random() < 0.33):
+                    combat['team_user_objs'][combat['active_user']].current_hp -= (40 * 40 * combat['team_user_objs'][combat['active_user']].current_att/combat['team_user_objs'][combat['active_user']].current_def)/50 + 2
                 else:
-                    if team_user[active_user].moveset[attacks[attacker]].accuracy != None:
-                        if random.random() < (team_user[active_user].moveset[attacks[attacker]].accuracy*team_user[active_user].accuracy*team_foe[active_foe].accuracy):
+                    if combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
+                        if random.random() < (combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_user_objs'][combat['active_user']].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy):
                             failed = False
-                            attack_functions_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
+                            attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                            combat['team_user_objs'] = attack_functions_output[0]
+                            combat['team_foe_objs'] = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
-                            if 20 in team_user[active_user].status_list:
+                            if 20 in combat['team_user_objs'][combat['active_user']].status_list:
                                 taunted = True
                                 print('taunted')
                             else: 
-                                attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                                team_user = attack_functions_output[0]
-                                team_foe = attack_functions_output[1]
-                            attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
+                                attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                                combat['team_user_objs'] = attack_functions_output[0]
+                                combat['team_foe_objs'] = attack_functions_output[1]
+                            attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
+                            combat['team_user_objs'] = attack_functions_output[0]
+                            combat['team_foe_objs'] = attack_functions_output[1]
                         else: failed = True
                     else:
-                        attack_power_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-                        team_user = attack_power_output[0]
-                        team_foe = attack_power_output[1]
-                        if 20 in team_user[active_user].status_list:
+                        attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                        combat['team_user_objs'] = attack_power_output[0]
+                        combat['team_foe_objs'] = attack_power_output[1]
+                        if 20 in combat['team_user_objs'][combat['active_user']].status_list:
                             taunted = True
                             print('taunted')
                         else: 
-                            attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
-                        attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
-                        team_user = attack_functions_output[0]
-                        team_foe = attack_functions_output[1]
-            else: print(team_foe[active_foe].name + ' is protecting himself')
-        else: print(team_user[active_user].name + ' flinched!')
-        team_user[active_user].moveset[attacks[attacker]].spendPP()
+                            attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                            combat['team_user_objs'] = attack_functions_output[0]
+                            combat['team_foe_objs'] = attack_functions_output[1]
+                        attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
+                        combat['team_user_objs'] = attack_functions_output[0]
+                        combat['team_foe_objs'] = attack_functions_output[1]
+            else: print(combat['team_foe_objs'][combat['active_foe']].name + ' is protecting himself')
+        else: print(combat['team_user_objs'][combat['active_user']].name + ' flinched!')
+        combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].spendPP()
     if attacker == 1:
         print('+++')
-        if 10 not in team_foe[active_foe].status_list:
-            if 31 not in team_user[active_user].status_list:
-                if (9 in team_foe[active_foe].status_list) and (random.random() < 0.33):
-                    team_foe[active_foe].current_hp -= (40 * 40 * team_foe[active_foe].current_att/team_foe[active_foe].current_def)/50 + 2
+        if 10 not in combat['team_foe_objs'][combat['active_foe']].status_list:
+            if 31 not in combat['team_user_objs'][combat['active_user']].status_list:
+                if (9 in combat['team_foe_objs'][combat['active_foe']].status_list) and (random.random() < 0.33):
+                    combat['team_foe_objs'][combat['active_foe']].current_hp -= (40 * 40 * combat['team_foe_objs'][combat['active_foe']].current_att/combat['team_foe_objs'][combat['active_foe']].current_def)/50 + 2
                 else:
-                    if team_foe[active_foe].moveset[attacks[attacker]].accuracy != None:
-                        if random.random() < (team_foe[active_foe].moveset[attacks[attacker]].accuracy*team_foe[active_foe].accuracy*team_user[active_user].accuracy):
+                    if combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
+                        if random.random() < (combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy*combat['team_user_objs'][combat['active_user']].accuracy):
                             failed = False
-                            print('++++'+str(team_user[active_user].current_hp))
-                            attack_functions_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
+                            print('++++'+str(combat['team_user_objs'][combat['active_user']].current_hp))
+                            attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                            combat['team_user_objs'] = attack_functions_output[0]
+                            combat['team_foe_objs'] = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
-                            print('++++'+str(damage_dealt)+str(team_user[active_user].current_hp))
-                            if 20 in team_foe[active_foe].status_list:
+                            print('++++'+str(damage_dealt)+str(combat['team_user_objs'][combat['active_user']].current_hp))
+                            if 20 in combat['team_foe_objs'][combat['active_foe']].status_list:
                                 taunted = True
                                 print('taunted')
                             else: 
-                                attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                                team_user = attack_functions_output[0]
-                                team_foe = attack_functions_output[1]
-                            attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
+                                attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                                combat['team_user_objs'] = attack_functions_output[0]
+                                combat['team_foe_objs'] = attack_functions_output[1]
+                            attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
+                            combat['team_user_objs'] = attack_functions_output[0]
+                            combat['team_foe_objs'] = attack_functions_output[1]
                         else: 
                             failed = True
                             print('failed')
                     else:
-                        attack_power_output = attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-                        team_user = attack_power_output[0]
-                        team_foe = attack_power_output[1]
-                        if 20 in team_foe[active_foe].status_list:
+                        attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                        combat['team_user_objs'] = attack_power_output[0]
+                        combat['team_foe_objs'] = attack_power_output[1]
+                        if 20 in combat['team_foe_objs'][combat['active_foe']].status_list:
                             taunted = True
                             print('taunted')
                         else: 
-                            attack_functions_output = attack_status(team_user, active_user, team_foe, active_foe, attacker, attacks)
-                            team_user = attack_functions_output[0]
-                            team_foe = attack_functions_output[1]
-                        attack_functions_output = attack_hp(team_user, active_user, team_foe, active_foe, attacker, attacks, damage_dealt)
-                        team_user = attack_functions_output[0]
-                        team_foe = attack_functions_output[1]
-            else: print(team_user[active_user].name + ' is protecting himself')
-        else: print(team_foe[active_foe].name + ' flinched!')
-        team_foe[active_foe].moveset[attacks[attacker]].spendPP()
-    return [team_user, team_foe, failed, hazard]
+                            attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
+                            combat['team_user_objs'] = attack_functions_output[0]
+                            combat['team_foe_objs'] = attack_functions_output[1]
+                        attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
+                        combat['team_user_objs'] = attack_functions_output[0]
+                        combat['team_foe_objs'] = attack_functions_output[1]
+            else: print(combat['team_user_objs'][combat['active_user']].name + ' is protecting himself')
+        else: print(combat['team_foe_objs'][combat['active_foe']].name + ' flinched!')
+        combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].spendPP()
+    return [combat['team_user_objs'], combat['team_foe_objs'], failed, hazard]
 
-def battle_old(chosen_pokemon, combat):
-    i: int = 0
-    endCombat: bool = False
-    team_user: list = []
-    team_foe: list = []
-    active_user: int = 0
-    active_foe: int = 0
-    battle_status: int = 0              # 0 menu, 1  team, 2  moves
-    menu_choice: int = 0
-    attacking_order: list
-    attacking_output: tuple
-    attacks: list
-    attack_output: list
-    types_table: dict
-    hazards: list = []
-    dir_py = os.path.dirname(__file__)
-    rel_path = 'data/types.json'
-    with open(os.path.join(dir_py, rel_path), 'r') as f_types:
-        types_table = json.load(f_types)
-
-    attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-    attacking_order = [attacking_output[0], attacking_output[1]]
-    attacks = [attacking_output[2], attacking_output[3]]
-    for attacker in attacking_order:
-        if attacker == 0 and team_user[active_user].current_hp == 0:
-            team_user.pop(active_user)
-            menu_choice = battle_menu_team(team_user, active_user)
-            active_user = menu_choice
-            battle_status = 0
-        if attacker == 1 and team_foe[active_foe].current_hp == 0:
-            team_foe.pop(active_foe)
-            if team_foe: active_foe = random.randint(0, len(team_foe))
-            else: battle_status = 0
-        attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-        print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
-        team_user = attack_output[0]
-        team_foe = attack_output[1]
-    if battle_status == 2: 
-        menu_choice = battle_menu_team(team_user, active_user)
-        if menu_choice != -1:
-            active_user = menu_choice
-            attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-            attacking_order = [attacking_output[0], attacking_output[1]]
-            attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
-            team_user = attack_output[0]
-            team_foe = attack_output[1]
-        battle_status = 0
+# def battle_old(chosen_pokemon, combat):
+#     i: int = 0
+#     endCombat: bool = False
+#     team_user: list = []
+#     team_foe: list = []
+#     active_user: int = 0
+#     active_foe: int = 0
+#     battle_status: int = 0              # 0 menu, 1  team, 2  moves
+#     menu_choice: int = 0
+#     attacking_order: list
+#     attacking_output: tuple
+#     attacks: list
+#     attack_output: list
+#     hazards: list = []
+#     dir_py = os.path.dirname(__file__)
+#     rel_path = 'data/types.json'
+#     types_table: dict
+#     with open(os.path.join(os.path.dirname(__file__), 'data/types.json'), 'r') as f_types:
+#         types_table = json.load(f_types)
+#     attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+#     attacking_order = [attacking_output[0], attacking_output[1]]
+#     attacks = [attacking_output[2], attacking_output[3]]
+#     for attacker in attacking_order:
+#         if attacker == 0 and team_user[active_user].current_hp == 0:
+#             team_user.pop(active_user)
+#             menu_choice = battle_menu_team(team_user, active_user)
+#             active_user = menu_choice
+#             battle_status = 0
+#         if attacker == 1 and team_foe[active_foe].current_hp == 0:
+#             team_foe.pop(active_foe)
+#             if team_foe: active_foe = random.randint(0, len(team_foe))
+#             else: battle_status = 0
+#         attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
+#         print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
+#         team_user = attack_output[0]
+#         team_foe = attack_output[1]
+#     if battle_status == 2: 
+#         menu_choice = battle_menu_team(team_user, active_user)
+#         if menu_choice != -1:
+#             active_user = menu_choice
+#             attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
+#             attacking_order = [attacking_output[0], attacking_output[1]]
+#             attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
+#             team_user = attack_output[0]
+#             team_foe = attack_output[1]
+#         battle_status = 0
 
 def battle(combat): 
-    pass
+    types_table: dict
+    with open(os.path.join(os.path.dirname(__file__), 'data/types.json'), 'r') as f_types:
+        types_table = json.load(f_types)
+    if combat['attacking']['turn'] == 1:
+        if combat['attacking']['user_shift'] == True: 
+            combat['active_user'] = combat['attacking']['user_shift']
+        else: 
+            if combat['attacking']['user_first'] == True: 
+                combat = attack(types_table, combat, 0)
+            else: 
+                combat = attack(types_table, combat, 1)
+    elif combat['attacking']['turn'] == 2: 
+        if combat['attacking']['user_first'] == True: 
+            combat = attack(types_table, combat, 1)
+        else: 
+            combat = attack(types_table, combat, 0)
+    combat['attacking']['turn'] += 1
+    return combat
 
 def load_images(to_build):
     images_list: list = []
@@ -1021,7 +1048,11 @@ def main():
         'active_foe': 0, 
         'new_battle': True,
         'battle_status': 0, 
-        'attacking': {}
+        'attacking': {'attacks': [0, 0],
+        'user_first': False, 
+        'user_shift': False, 
+        'shifts_to': 0,
+        'turn': 0}
     }
 
     while True:
@@ -1078,6 +1109,8 @@ def main():
                                 del(combat['team_user_ids'][i])
                         combat['team_user_ids'] = remove_duplicates(combat['team_user_ids'])
                 elif game_status == 2: 
+                    if combat['attacking']['turn'] == 2: 
+                        combat = battle(combat)
                     if combat['battle_status'] == 0 and functions_output != None: 
                         if functions_output == 1: 
                             combat['team_user_objs'] = []
@@ -1093,6 +1126,7 @@ def main():
                                 functions_output -= 1
                             if combat['team_user_objs'][functions_output].ko == False: 
                                 combat['attacking'] = attacking_shift(combat, functions_output)
+                                combat = battle(combat)
                                 combat['battle_status'] = 0
                     elif combat['battle_status'] == 2 and functions_output != None:
                         if functions_output == 0: 
@@ -1101,9 +1135,10 @@ def main():
                             functions_output -= 1
                             if combat['team_user_objs'][combat['active_user']].moveset[functions_output].pps > 0: 
                                 combat['attacking'] = attacking_both(combat, functions_output)
+                                combat = battle(combat)
                                 combat['battle_status'] = 0
+                    
                                 
-
             if game_status == 4:
                 pygame.quit()
                 sys.exit(0)
