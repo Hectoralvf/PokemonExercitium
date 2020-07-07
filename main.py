@@ -419,8 +419,12 @@ def status_effect(team, active):
     return [team, burnt, poisoned, apply_hazard]
 
 def attack(types_table, combat, attacker):
-    if attacker == 0: 
+    attack_functions_output: list
 
+    if attacker == 0: 
+        attack_functions_output = status_effect(combat['team_user_objs'], combat['active_user'])
+        combat['team_user_objs'] = attack_functions_output[0]
+    return combat
 
 def attack_old(types_table, combat, attacker):
     attack_functions_output: list
@@ -432,7 +436,7 @@ def attack_old(types_table, combat, attacker):
         attack_functions_output = status_effect(combat['team_user_objs'], combat['active_user'])
         combat['team_user_objs'] = attack_functions_output[0]
         if attack_functions_output[1] == True: 
-            print('Burning damage u'
+            print('Burning damage u')
         if attack_functions_output[2] == True: 
             print('Poison damage u')
         if attack_functions_output[3] == True: 
@@ -585,15 +589,19 @@ def battle(combat):
     with open(os.path.join(os.path.dirname(__file__), 'data/types.json'), 'r') as f_types:
         types_table = json.load(f_types)
     if combat['attacking']['turn'] == 1:
+        print('turn 1')
         if combat['attacking']['user_shift'] == True: 
-            combat['active_user'] = combat['attacking']['user_shift']
+            combat['active_user'] = combat['attacking']['shifts_to']
         else: 
             if combat['attacking']['user_first'] == True: 
                 combat = attack(types_table, combat, 0)
             else: 
                 combat = attack(types_table, combat, 1)
     elif combat['attacking']['turn'] == 2: 
-        if combat['attacking']['user_first'] == True: 
+        print('turn 2')
+        if combat['attacking']['user_shift'] == True: 
+            combat = attack(types_table, combat, 1)
+        elif combat['attacking']['user_first'] == True: 
             combat = attack(types_table, combat, 1)
         else: 
             combat = attack(types_table, combat, 0)
@@ -1067,6 +1075,8 @@ def main():
             functions_output = battle_gui(screen, resources, combat)
             if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 0: 
                 screen = functions_output
+                if combat['attacking']['turn'] == 2: 
+                    combat = battle(combat)
             else: game_status = 0
         if game_status == 3: 
             screen = blit_guide(screen, resources)
@@ -1108,9 +1118,8 @@ def main():
                                 combat['team_user_ids'].append(combat['team_user_ids'][i])
                                 del(combat['team_user_ids'][i])
                         combat['team_user_ids'] = remove_duplicates(combat['team_user_ids'])
-                elif game_status == 2: 
-                    if combat['attacking']['turn'] == 2: 
-                        combat = battle(combat)
+                elif game_status == 2:
+                    print('status', combat['battle_status'], 'out', functions_output)
                     if combat['battle_status'] == 0 and functions_output != None: 
                         if functions_output == 1: 
                             combat['team_user_objs'] = []
@@ -1126,7 +1135,9 @@ def main():
                                 functions_output -= 1
                             if combat['team_user_objs'][functions_output].ko == False: 
                                 combat['attacking'] = attacking_shift(combat, functions_output)
+                                print('act', combat['active_user'])
                                 combat = battle(combat)
+                                print('act', combat['active_user'])
                                 combat['battle_status'] = 0
                     elif combat['battle_status'] == 2 and functions_output != None:
                         if functions_output == 0: 
