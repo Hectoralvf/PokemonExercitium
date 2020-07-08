@@ -310,7 +310,7 @@ def attack_status(team_user, active_user, team_foe, active_foe, attacker, attack
                 if random.random() <= team_user[active_user].moveset[attacks[attacker]].status_foe['probability'][i]:
                     if team_user[active_user].moveset[attacks[attacker]].status_foe['affected'][i] not in team_foe[active_foe].status_list:
                         team_foe[active_foe].status_list.append(team_user[active_user].moveset[attacks[attacker]].status_foe['affected'][i])
-                        if team_user[active_user].moveset[attacks[attacker]].status_user['turns'] != None:
+                        if team_user[active_user].moveset[attacks[attacker]].status_foe['turns'] != None:
                             team_foe[active_foe].status_turns.append(team_user[active_user].moveset[attacks[attacker]].status_foe['turns'][i])
                         else: team_user[active_user].status_turns.append(random.randint(2,5))
                 i += 1
@@ -396,11 +396,11 @@ def status_effect(team, active):
 
     while i < len(team[active].status_turns):
         if team[active].status_turns[i] == 0: 
-            team[active].status_turns[i].pop(i)
-            team[active].status_list[i].pop(i)
+            team[active].status_turns.pop(i)
+            team[active].status_list.pop(i)
         else: i += 1
-        i = 0
-
+    i = 0
+    print(team[active].name, team[active].status_list, team[active]. status_turns)
     if team[active].status_list != None:
         while i < len(team[active].status_list):
             if team[active].status_list[i] == 1: 
@@ -416,6 +416,8 @@ def status_effect(team, active):
                 apply_hazard = True
                 
             team[active].status_turns[i] -= 1
+
+            i += 1
     return [team, burnt, poisoned, apply_hazard]
 
 def attack(types_table, combat, attacker):
@@ -445,6 +447,7 @@ def attack(types_table, combat, attacker):
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
+                            print('user', str(damage_dealt))
                             attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
@@ -459,6 +462,7 @@ def attack(types_table, combat, attacker):
                         combat['team_user_objs'] = attack_power_output[0]
                         combat['team_foe_objs'] = attack_power_output[1]
                         damage_dealt = attack_power_output[2]
+                        print('user', str(damage_dealt))
                         attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_functions_output[0]
                         combat['team_foe_objs'] = attack_functions_output[1]
@@ -476,12 +480,11 @@ def attack(types_table, combat, attacker):
                     if combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
                         if random.random() < (combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy*combat['team_user_objs'][combat['active_user']].accuracy):
                             failed = False
-                            print('++++'+str(combat['team_user_objs'][combat['active_user']].current_hp))
                             attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
-                            print('++++'+str(damage_dealt)+str(combat['team_user_objs'][combat['active_user']].current_hp))
+                            print('foe', str(damage_dealt))
                             attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
@@ -496,6 +499,7 @@ def attack(types_table, combat, attacker):
                         combat['team_user_objs'] = attack_power_output[0]
                         combat['team_foe_objs'] = attack_power_output[1]
                         damage_dealt = attack_power_output[2]
+                        print('foe', str(damage_dealt))
                         attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_functions_output[0]
                         combat['team_foe_objs'] = attack_functions_output[1]
@@ -664,6 +668,37 @@ def attack(types_table, combat, attacker):
 #             team_user = attack_output[0]
 #             team_foe = attack_output[1]
 #         battle_status = 0
+
+def shift_foe(combat):
+    i = 0
+    while i < len(combat['team_foe_objs']): 
+        if combat['team_foe_objs'][i].ko == False: 
+            combat['active_foe'] = i
+            i += len(combat['team_foe_objs'])
+        i += 1
+    return combat
+
+def check_life(combat): 
+    user_ko = False
+
+    if combat['team_foe_objs'][combat['active_foe']].current_hp <= 0: 
+        combat['team_foe_objs'][combat['active_foe']].current_hp = 0
+        combat['team_foe_objs'][combat['active_foe']].ko = True
+    if combat['team_user_objs'][combat['active_user']].current_hp <= 0: 
+        combat['team_user_objs'][combat['active_user']].current_hp = 0
+        combat['team_user_objs'][combat['active_user']].ko = True
+    return combat
+
+def check_ko(combat): 
+    user_ko = False
+
+    combat = check_life(combat)
+
+    if combat['team_foe_objs'][combat['active_foe']].ko == True: 
+        combat = shift_foe(combat)
+    if combat['team_user_objs'][combat['active_user']].ko == True: 
+        user_ko = True
+    return [user_ko, combat]
 
 def battle(combat): 
     types_table: dict
@@ -1137,11 +1172,13 @@ def main():
         'active_foe': 0, 
         'new_battle': True,
         'battle_status': 0, 
-        'attacking': {'attacks': [0, 0],
-        'user_first': False, 
-        'user_shift': False, 
-        'shifts_to': 0,
-        'turn': 0}
+        'attacking': {
+            'attacks': [0, 0],
+            'user_first': False, 
+            'user_shift': False, 
+            'shifts_to': 0,
+            'turn': 0
+            }
     }
 
     while True:
@@ -1156,7 +1193,10 @@ def main():
             functions_output = battle_gui(screen, resources, combat)
             if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 0: 
                 screen = functions_output
-                if combat['attacking']['turn'] == 2: 
+                functions_output = check_ko(combat)
+                if functions_output[0] == True: 
+                    combat['battle_status'] = 1
+                else: 
                     combat = battle(combat)
             else: game_status = 0
         if game_status == 3: 
@@ -1216,9 +1256,9 @@ def main():
                                 functions_output -= 1
                             if combat['team_user_objs'][functions_output].ko == False: 
                                 combat['attacking'] = attacking_shift(combat, functions_output)
-                                print('act', combat['active_user'])
+                                print('active', combat['active_user'])
                                 combat = battle(combat)
-                                print('act', combat['active_user'])
+                                print('active', combat['active_user'])
                                 combat['battle_status'] = 0
                     elif combat['battle_status'] == 2 and functions_output != None:
                         if functions_output == 0: 
