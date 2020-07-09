@@ -1044,6 +1044,7 @@ def main():
     game_status: int = 0
     functions_output: None
     ids_list = []
+    new_combat = True
     combat = {
         'team_user_ids': [3, 26, 150, 115, 0, 0],
         'team_user_objs': [],
@@ -1074,13 +1075,14 @@ def main():
             screen = blit_builder(screen, resources, combat['team_user_ids'], combat['active_user'])
         if game_status == 2:
             if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 0: 
-                functions_output = check_ko(combat)
-                if functions_output[0] == True: 
-                    combat['battle_status'] = 1
-                elif combat['attacking']['text_onscreen'] == False: 
-                    combat = battle(combat)
-                else: 
-                    combat['battle_status'] = 3
+                if new_combat == False:
+                    functions_output = check_ko(combat)
+                    if functions_output[0] == True: 
+                        combat['battle_status'] = 1
+                    elif combat['attacking']['text_onscreen'] == False: 
+                        combat = battle(combat)
+                    else: 
+                        combat['battle_status'] = 3
                 functions_output = battle_gui(screen, resources, combat)
                 screen = functions_output
             elif is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 1: 
@@ -1089,12 +1091,14 @@ def main():
                 combat['attacking']['text_message'] = 'You win the battle!'
                 functions_output = battle_gui(screen, resources, combat)
                 screen = functions_output
+                new_combat = True
             elif is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 2: 
                 combat['battle_status'] = 3
                 combat['attacking']['text_onscreen'] = True
                 combat['attacking']['text_message'] = 'The foe wins the battle'
                 functions_output = battle_gui(screen, resources, combat)
                 screen = functions_output
+                new_combat = True
         if game_status == 3: 
             screen = blit_guide(screen, resources)
         if game_status == 4:
@@ -1158,9 +1162,11 @@ def main():
                                 combat['battle_status'] = 0
                     elif combat['battle_status'] == 2 and functions_output != None:
                         if functions_output == 0: 
+                            new_combat = False
                             combat['battle_status'] = 0
                         else: 
                             functions_output -= 1
+                            new_combat = False
                             if combat['team_user_objs'][combat['active_user']].moveset[functions_output].pps > 0: 
                                 combat['attacking'] = attacking_both(combat, functions_output)
                                 combat = battle(combat)
