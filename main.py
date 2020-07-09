@@ -141,6 +141,10 @@ def is_combat_possible(team_user, team_foe):
     count_u = 0
     count_f = 0
     for i in team_user:
+        if i.current_hp <= 0: i.ko = True
+    for i in team_foe:
+        if i.current_hp <= 0: i.ko = True
+    for i in team_user:
         if i.ko == False:
             count_u += 1
     for i in team_foe:
@@ -1010,6 +1014,7 @@ def main():
     pygame.display.set_caption("Pokémon Exercitium")
     pygame.display.set_icon(pygame.image.load(os.path.dirname(__file__) + '/images/display_icon.png'))
     screen = pygame.display.set_mode((1366, 768))
+
     with open(os.path.join(os.path.dirname(__file__), 'data/pokedex.json'), 'r') as f_pokedex:
         dic_pokedex = json.load(f_pokedex)
     resources: dict = {
@@ -1027,6 +1032,7 @@ def main():
         'sprites_types_big': load_type_sprites('big'),
         'sprites_attack': load_attack_sprites()
     }
+    
     # PyGame music
     SONG_END = pygame.USEREVENT + 1
     pygame.mixer.music = playlist_music(SONG_END)
@@ -1077,7 +1083,18 @@ def main():
                     combat['battle_status'] = 3
                 functions_output = battle_gui(screen, resources, combat)
                 screen = functions_output
-            else: game_status = 0
+            elif is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 1: 
+                combat['battle_status'] = 3
+                combat['attacking']['text_onscreen'] = True
+                combat['attacking']['text_message'] = 'You win the battle!'
+                functions_output = battle_gui(screen, resources, combat)
+                screen = functions_output
+            elif is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 2: 
+                combat['battle_status'] = 3
+                combat['attacking']['text_onscreen'] = True
+                combat['attacking']['text_message'] = 'The foe wins the battle'
+                functions_output = battle_gui(screen, resources, combat)
+                screen = functions_output
         if game_status == 3: 
             screen = blit_guide(screen, resources)
         if game_status == 4:
@@ -1151,8 +1168,9 @@ def main():
                     if combat['battle_status'] == 3: 
                         combat['attacking']['text_onscreen'] = False
                         combat['battle_status'] = 0
-                    
-                                
+                        if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 1 or is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 2: 
+                            game_status = 0
+                     
             if game_status == 4:
                 pygame.quit()
                 sys.exit(0)
