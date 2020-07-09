@@ -418,7 +418,6 @@ def status_effect(team, active):
             team[active].status_list.pop(i)
         else: i += 1
     i = 0
-    print(team[active].name, team[active].status_list, team[active]. status_turns)
     if team[active].status_list != None:
         while i < len(team[active].status_list):
             if team[active].status_list[i] == 1: 
@@ -466,7 +465,6 @@ def attack(types_table, combat, attacker):
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
-                            print('user', str(damage_dealt))
                             attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
@@ -475,21 +473,17 @@ def attack(types_table, combat, attacker):
                             combat['team_foe_objs'] = attack_functions_output[1]
                         else: 
                             failed = True
-                            print('failed')
                     else:
                         attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_power_output[0]
                         combat['team_foe_objs'] = attack_power_output[1]
                         damage_dealt = attack_power_output[2]
-                        print('user', str(damage_dealt))
                         attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_functions_output[0]
                         combat['team_foe_objs'] = attack_functions_output[1]
                         attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
                         combat['team_user_objs'] = attack_functions_output[0]
                         combat['team_foe_objs'] = attack_functions_output[1]
-            else: print(combat['team_foe_objs'][combat['active_foe']].name + ' is protecting himself')
-        else: print(combat['team_user_objs'][combat['active_user']].name + ' flinched!')
     else: 
         if 10 not in combat['team_foe_objs'][combat['active_foe']].status_list:
             if 31 not in combat['team_user_objs'][combat['active_user']].status_list:
@@ -503,7 +497,6 @@ def attack(types_table, combat, attacker):
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
                             damage_dealt = attack_functions_output[2]
-                            print('foe', str(damage_dealt))
                             attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
@@ -512,21 +505,17 @@ def attack(types_table, combat, attacker):
                             combat['team_foe_objs'] = attack_functions_output[1]
                         else: 
                             failed = True
-                            print('failed')
                     else:
                         attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_power_output[0]
                         combat['team_foe_objs'] = attack_power_output[1]
                         damage_dealt = attack_power_output[2]
-                        print('foe', str(damage_dealt))
                         attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_functions_output[0]
                         combat['team_foe_objs'] = attack_functions_output[1]
                         attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
                         combat['team_user_objs'] = attack_functions_output[0]
                         combat['team_foe_objs'] = attack_functions_output[1]
-            else: print(combat['team_user_objs'][combat['active_user']].name + ' is protecting himself')
-        else: print(combat['team_foe_objs'][combat['active_foe']].name + ' flinched!')
         combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].spendPP()
     return combat
 
@@ -566,7 +555,6 @@ def battle(combat):
     with open(os.path.join(os.path.dirname(__file__), 'data/types.json'), 'r') as f_types:
         types_table = json.load(f_types)
     if combat['attacking']['turn'] == 1:
-        print('turn 1')
         if combat['attacking']['user_shift'] == True: 
             combat['active_user'] = combat['attacking']['shifts_to']
         else: 
@@ -579,7 +567,6 @@ def battle(combat):
                 combat['attacking']['text_onscreen'] = True
                 combat['attacking']['text_message'] = 'The foe ' + combat['team_foe_objs'][combat['active_foe']].name + ' used ' + combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][1]].name
     elif combat['attacking']['turn'] == 2: 
-        print('turn 2')
         if combat['attacking']['user_shift'] == True: 
             combat = attack(types_table, combat, 1)
             combat['attacking']['text_onscreen'] = True
@@ -1147,7 +1134,6 @@ def main():
                                 del(combat['team_user_ids'][i])
                         combat['team_user_ids'] = remove_duplicates(combat['team_user_ids'])
                 elif game_status == 2:
-                    print('status', combat['battle_status'], 'out', functions_output)
                     if combat['battle_status'] == 0 and functions_output != None: 
                         if functions_output == 1: 
                             combat['team_user_objs'] = []
@@ -1163,9 +1149,7 @@ def main():
                                 functions_output -= 1
                             if combat['team_user_objs'][functions_output].ko == False: 
                                 combat['attacking'] = attacking_shift(combat, functions_output)
-                                print('active', combat['active_user'])
                                 combat = battle(combat)
-                                print('active', combat['active_user'])
                                 combat['battle_status'] = 0
                     elif combat['battle_status'] == 2 and functions_output != None:
                         if functions_output == 0: 
