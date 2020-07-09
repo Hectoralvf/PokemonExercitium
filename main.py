@@ -415,7 +415,8 @@ def status_effect(team, active):
             elif team[active].status_list[i] == 37:
                 apply_hazard = True
                 
-            team[active].status_turns[i] -= 1
+            if team[active].status_turns[i] != None:
+                team[active].status_turns[i] -= 1
 
             i += 1
     return [team, burnt, poisoned, apply_hazard]
@@ -928,15 +929,15 @@ def blit_battle_1(screen, resources, combat):
     dic_pokedex: None
     sprites_list = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/pokemon/tiny/'))
     types_list = os.listdir(os.path.join(os.path.dirname(__file__), 'sprites/types/tiny/'))
-    alive = 0
-    for i in combat['team_user_objs']: 
-        if i.ko == False:
-            alive += 1
+    # alive = 0
+    # for i in combat['team_user_objs']: 
+    #     if i.ko == False:
+    #         alive += 1
     for image in resources['images_battle']: 
         if resources['images_battle'].index(image) == 6:
             screen.blit(image, [968, 660])
         elif resources['images_battle'].index(image) == 7:
-            for i in range(alive - 1): 
+            for i in range(len(combat['team_user_objs']) - 1): 
                 screen.blit(image, [968, 660 - 100*(i + 1)])
     with open(os.path.join(os.path.dirname(__file__), 'data/pokedex.json'), 'r') as f_pokedex:
         dic_pokedex = json.load(f_pokedex)
