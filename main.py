@@ -188,13 +188,17 @@ def attacking_both(combat, attack_user):
         'user_first': False, 
         'user_shift': False, 
         'shifts_to': 0,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
     elif combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority > combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
         return {'attacks': [attack_user, attack_foe],
         'user_first': True, 
         'user_shift': False, 
         'shifts_to': 0,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
     elif combat['team_user_objs'][combat['active_user']].moveset[attack_user].priority == combat['team_foe_objs'][combat['active_foe']].moveset[attack_foe].priority: 
         if 3 in combat['team_user_objs'][combat['active_user']].status_list:
             combat['team_user_objs'][combat['active_user']].current_speed = combat['team_user_objs'][combat['active_user']].current_speed*0.5
@@ -205,13 +209,17 @@ def attacking_both(combat, attack_user):
         'user_first': True, 
         'user_shift': False, 
         'shifts_to': 0,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
         elif combat['team_user_objs'][combat['active_user']].current_speed < combat['team_foe_objs'][combat['active_foe']].current_speed: 
             return {'attacks': [attack_user, attack_foe],
         'user_first': False, 
         'user_shift': False, 
         'shifts_to': 0,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
         elif combat['team_user_objs'][combat['active_user']].current_speed == combat['team_foe_objs'][combat['active_foe']].current_speed: 
             random_number = random.randint(1, 6000)
             if random_number < 3001:
@@ -219,12 +227,16 @@ def attacking_both(combat, attack_user):
         'user_first': True, 
         'user_shift': False, 
         'shifts_to': 0,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
             else: return {'attacks': [attack_user, attack_foe],
         'user_first': False, 
         'user_shift': False, 
         'shifts_to': 0,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
 
 def attacking_shift(combat, chosen_pokemon):
     random_number: int
@@ -233,7 +245,9 @@ def attacking_shift(combat, chosen_pokemon):
         'user_first': True, 
         'user_shift': True, 
         'shifts_to': chosen_pokemon,
-        'turn': 1}
+        'turn': 1,
+        'text_onscreen': False,
+        'text_message': combat['attacking']['text_message']}
 
 def attack_power(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks):
     damage: int = 0
@@ -512,164 +526,6 @@ def attack(types_table, combat, attacker):
         combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].spendPP()
     return combat
 
-# def attack_old(types_table, combat, attacker):
-#     attack_functions_output: list
-#     damage_dealt: int = 0
-#     failed = None
-#     hazard: list = []
-
-#     if attacker == 0:
-#         attack_functions_output = status_effect(combat['team_user_objs'], combat['active_user'])
-#         combat['team_user_objs'] = attack_functions_output[0]
-#         if attack_functions_output[1] == True: 
-#             print('Burning damage u')
-#         if attack_functions_output[2] == True: 
-#             print('Poison damage u')
-#         if attack_functions_output[3] == True: 
-#             hazard.append(0)
-#         attack_functions_output = status_effect(combat['team_foe_objs'], combat['active_foe'])
-#         combat['team_foe_objs'] = attack_functions_output[0]
-#         if attack_functions_output[1] == True: 
-#             print('Burning damage f')
-#         if attack_functions_output[2] == True: 
-#             print('Poison damage f')
-#         if attack_functions_output[3] == True: 
-#             hazard.append(1)
-#         if 10 not in combat['team_user_objs'][combat['active_user']].status_list:
-#             if 31 not in combat['team_foe_objs'][combat['active_foe']].status_list:
-#                 if (9 in combat['team_user_objs'][combat['active_user']].status_list) and (random.random() < 0.33):
-#                     combat['team_user_objs'][combat['active_user']].current_hp -= (40 * 40 * combat['team_user_objs'][combat['active_user']].current_att/combat['team_user_objs'][combat['active_user']].current_def)/50 + 2
-#                 else:
-#                     if combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
-#                         if random.random() < (combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_user_objs'][combat['active_user']].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy):
-#                             failed = False
-#                             attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                             combat['team_user_objs'] = attack_functions_output[0]
-#                             combat['team_foe_objs'] = attack_functions_output[1]
-#                             damage_dealt = attack_functions_output[2]
-#                             if 20 in combat['team_user_objs'][combat['active_user']].status_list:
-#                                 taunted = True
-#                                 print('taunted')
-#                             else: 
-#                                 attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                                 combat['team_user_objs'] = attack_functions_output[0]
-#                                 combat['team_foe_objs'] = attack_functions_output[1]
-#                             attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
-#                             combat['team_user_objs'] = attack_functions_output[0]
-#                             combat['team_foe_objs'] = attack_functions_output[1]
-#                         else: failed = True
-#                     else:
-#                         attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                         combat['team_user_objs'] = attack_power_output[0]
-#                         combat['team_foe_objs'] = attack_power_output[1]
-#                         if 20 in combat['team_user_objs'][combat['active_user']].status_list:
-#                             taunted = True
-#                             print('taunted')
-#                         else: 
-#                             attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                             combat['team_user_objs'] = attack_functions_output[0]
-#                             combat['team_foe_objs'] = attack_functions_output[1]
-#                         attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
-#                         combat['team_user_objs'] = attack_functions_output[0]
-#                         combat['team_foe_objs'] = attack_functions_output[1]
-#             else: print(combat['team_foe_objs'][combat['active_foe']].name + ' is protecting himself')
-#         else: print(combat['team_user_objs'][combat['active_user']].name + ' flinched!')
-#         combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].spendPP()
-#     if attacker == 1:
-#         print('+++')
-#         if 10 not in combat['team_foe_objs'][combat['active_foe']].status_list:
-#             if 31 not in combat['team_user_objs'][combat['active_user']].status_list:
-#                 if (9 in combat['team_foe_objs'][combat['active_foe']].status_list) and (random.random() < 0.33):
-#                     combat['team_foe_objs'][combat['active_foe']].current_hp -= (40 * 40 * combat['team_foe_objs'][combat['active_foe']].current_att/combat['team_foe_objs'][combat['active_foe']].current_def)/50 + 2
-#                 else:
-#                     if combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
-#                         if random.random() < (combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy*combat['team_user_objs'][combat['active_user']].accuracy):
-#                             failed = False
-#                             print('++++'+str(combat['team_user_objs'][combat['active_user']].current_hp))
-#                             attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                             combat['team_user_objs'] = attack_functions_output[0]
-#                             combat['team_foe_objs'] = attack_functions_output[1]
-#                             damage_dealt = attack_functions_output[2]
-#                             print('++++'+str(damage_dealt)+str(combat['team_user_objs'][combat['active_user']].current_hp))
-#                             if 20 in combat['team_foe_objs'][combat['active_foe']].status_list:
-#                                 taunted = True
-#                                 print('taunted')
-#                             else: 
-#                                 attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                                 combat['team_user_objs'] = attack_functions_output[0]
-#                                 combat['team_foe_objs'] = attack_functions_output[1]
-#                             attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
-#                             combat['team_user_objs'] = attack_functions_output[0]
-#                             combat['team_foe_objs'] = attack_functions_output[1]
-#                         else: 
-#                             failed = True
-#                             print('failed')
-#                     else:
-#                         attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                         combat['team_user_objs'] = attack_power_output[0]
-#                         combat['team_foe_objs'] = attack_power_output[1]
-#                         if 20 in combat['team_foe_objs'][combat['active_foe']].status_list:
-#                             taunted = True
-#                             print('taunted')
-#                         else: 
-#                             attack_functions_output = attack_status(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
-#                             combat['team_user_objs'] = attack_functions_output[0]
-#                             combat['team_foe_objs'] = attack_functions_output[1]
-#                         attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
-#                         combat['team_user_objs'] = attack_functions_output[0]
-#                         combat['team_foe_objs'] = attack_functions_output[1]
-#             else: print(combat['team_user_objs'][combat['active_user']].name + ' is protecting himself')
-#         else: print(combat['team_foe_objs'][combat['active_foe']].name + ' flinched!')
-#         combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].spendPP()
-#     return [combat['team_user_objs'], combat['team_foe_objs'], failed, hazard]
-
-# def battle_old(chosen_pokemon, combat):
-#     i: int = 0
-#     endCombat: bool = False
-#     team_user: list = []
-#     team_foe: list = []
-#     active_user: int = 0
-#     active_foe: int = 0
-#     battle_status: int = 0              # 0 menu, 1  team, 2  moves
-#     menu_choice: int = 0
-#     attacking_order: list
-#     attacking_output: tuple
-#     attacks: list
-#     attack_output: list
-#     hazards: list = []
-#     dir_py = os.path.dirname(__file__)
-#     rel_path = 'data/types.json'
-#     types_table: dict
-#     with open(os.path.join(os.path.dirname(__file__), 'data/types.json'), 'r') as f_types:
-#         types_table = json.load(f_types)
-#     attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-#     attacking_order = [attacking_output[0], attacking_output[1]]
-#     attacks = [attacking_output[2], attacking_output[3]]
-#     for attacker in attacking_order:
-#         if attacker == 0 and team_user[active_user].current_hp == 0:
-#             team_user.pop(active_user)
-#             menu_choice = battle_menu_team(team_user, active_user)
-#             active_user = menu_choice
-#             battle_status = 0
-#         if attacker == 1 and team_foe[active_foe].current_hp == 0:
-#             team_foe.pop(active_foe)
-#             if team_foe: active_foe = random.randint(0, len(team_foe))
-#             else: battle_status = 0
-#         attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, attacker, attacks)
-#         print('Foe used ' + str(team_foe[active_foe].moveset[attacks[1]].name))
-#         team_user = attack_output[0]
-#         team_foe = attack_output[1]
-#     if battle_status == 2: 
-#         menu_choice = battle_menu_team(team_user, active_user)
-#         if menu_choice != -1:
-#             active_user = menu_choice
-#             attacking_output = attacking_order(team_user, active_user, team_foe, active_foe, menu_choice)
-#             attacking_order = [attacking_output[0], attacking_output[1]]
-#             attack_output = attack(types_table, team_user, active_user, team_foe, active_foe, 1, attacks)
-#             team_user = attack_output[0]
-#             team_foe = attack_output[1]
-#         battle_status = 0
-
 def shift_foe(combat):
     i = 0
     while i < len(combat['team_foe_objs']): 
@@ -712,16 +568,26 @@ def battle(combat):
         else: 
             if combat['attacking']['user_first'] == True: 
                 combat = attack(types_table, combat, 0)
+                combat['attacking']['text_onscreen'] = True
+                combat['attacking']['text_message'] = combat['team_user_objs'][combat['active_user']].name + ' used ' + combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][0]].name
             else: 
                 combat = attack(types_table, combat, 1)
+                combat['attacking']['text_onscreen'] = True
+                combat['attacking']['text_message'] = 'The foe ' + combat['team_foe_objs'][combat['active_foe']].name + ' used ' + combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][1]].name
     elif combat['attacking']['turn'] == 2: 
         print('turn 2')
         if combat['attacking']['user_shift'] == True: 
             combat = attack(types_table, combat, 1)
+            combat['attacking']['text_onscreen'] = True
+            combat['attacking']['text_message'] = 'The foe ' + combat['team_foe_objs'][combat['active_foe']].name + ' used ' + combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][1]].name
         elif combat['attacking']['user_first'] == True: 
             combat = attack(types_table, combat, 1)
+            combat['attacking']['text_onscreen'] = True
+            combat['attacking']['text_message'] = 'The foe ' + combat['team_foe_objs'][combat['active_foe']].name + ' used ' + combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][1]].name
         else: 
             combat = attack(types_table, combat, 0)
+            combat['attacking']['text_onscreen'] = True
+            combat['attacking']['text_message'] = combat['team_user_objs'][combat['active_user']].name + ' used ' + combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][0]].name
     combat['attacking']['turn'] += 1
     return combat
 
@@ -924,6 +790,11 @@ def blit_battle_0(screen, resources):
             counter += 1
     return screen
 
+def blit_battle_text(screen, resources, text: str):
+    screen.blit(resources['images_battle'][9], [0, 0])
+    screen.blit(resources['font_roboto_medium_24'].render(text, True, (90, 90, 90)), [10, 573])
+    return screen
+
 def blit_battle_1(screen, resources, combat):
     counter = 1
     dic_pokedex: None
@@ -1005,6 +876,9 @@ def battle_gui(screen, resources, combat):
         screen = blit_battle_1(screen, resources, combat)
     elif combat['battle_status'] == 2: 
         screen = blit_battle_2(screen, resources, combat)
+    elif combat['battle_status'] == 3: 
+        screen = blit_battle_text(screen, resources, combat['attacking']['text_message'])
+
     return screen
 
 def check_buttons(game_status, screen, resources, mouse_pos, combat): 
@@ -1178,7 +1052,9 @@ def main():
             'user_first': False, 
             'user_shift': False, 
             'shifts_to': 0,
-            'turn': 0
+            'turn': 0,
+            'text_onscreen': False,
+            'text_message': ''
             }
     }
 
@@ -1191,14 +1067,16 @@ def main():
         if game_status == 1: 
             screen = blit_builder(screen, resources, combat['team_user_ids'], combat['active_user'])
         if game_status == 2:
-            functions_output = battle_gui(screen, resources, combat)
             if is_combat_possible(combat['team_user_objs'], combat['team_foe_objs']) == 0: 
-                screen = functions_output
                 functions_output = check_ko(combat)
                 if functions_output[0] == True: 
                     combat['battle_status'] = 1
-                else: 
+                elif combat['attacking']['text_onscreen'] == False: 
                     combat = battle(combat)
+                else: 
+                    combat['battle_status'] = 3
+                functions_output = battle_gui(screen, resources, combat)
+                screen = functions_output
             else: game_status = 0
         if game_status == 3: 
             screen = blit_guide(screen, resources)
@@ -1270,6 +1148,9 @@ def main():
                                 combat['attacking'] = attacking_both(combat, functions_output)
                                 combat = battle(combat)
                                 combat['battle_status'] = 0
+                    if combat['battle_status'] == 3: 
+                        combat['attacking']['text_onscreen'] = False
+                        combat['battle_status'] = 0
                     
                                 
             if game_status == 4:
