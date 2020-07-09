@@ -525,7 +525,7 @@
     },
     "will_o_wisp": {
         "name": "Will-O-Wisp",
-        "type": "electric",
+        "type": "fire",
         "category": "Non-Damaging",
         "turns": null,
         "power": null,
