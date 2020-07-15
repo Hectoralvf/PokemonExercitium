@@ -158,22 +158,6 @@ def is_combat_possible(team_user, team_foe):
         return 2
     else: return 3          # no team has a usable pokemon
 
-def battle_menu_main(menu_choice):
-    menu_choice = int(input())
-    return menu_choice
-
-def battle_menu_moves(team_user, active_user, team_foe, active_foe):
-    menu_choice = int(input())-1
-    return menu_choice
-
-def battle_menu_team(team_user, active_user):
-    menu_choice = int(input())
-    return menu_choice
-
-def battle_dead_team(team_user, active_user):
-    menu_choice = int(input())
-    return menu_choice
-
 def choose_attack_foe():
     random_number = random.randint(1, 16000)   #random with small ranges doesn't feel really random
     if random_number < 4001: 
@@ -243,7 +227,6 @@ def attacking_both(combat, attack_user):
         'text_message': combat['attacking']['text_message']}
 
 def attacking_shift(combat, chosen_pokemon):
-    random_number: int
     attack_foe = choose_attack_foe()
     return {'attacks': [0, attack_foe],
         'user_first': True, 
@@ -460,7 +443,6 @@ def attack(types_table, combat, attacker):
                 else: 
                     if combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
                         if random.random() < (combat['team_user_objs'][combat['active_user']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_user_objs'][combat['active_user']].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy):
-                            failed = False
                             attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
@@ -471,8 +453,6 @@ def attack(types_table, combat, attacker):
                             attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
-                        else: 
-                            failed = True
                     else:
                         attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_power_output[0]
@@ -492,7 +472,6 @@ def attack(types_table, combat, attacker):
                 else:
                     if combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy != None:
                         if random.random() < (combat['team_foe_objs'][combat['active_foe']].moveset[combat['attacking']['attacks'][attacker]].accuracy*combat['team_foe_objs'][combat['active_foe']].accuracy*combat['team_user_objs'][combat['active_user']].accuracy):
-                            failed = False
                             attack_functions_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
@@ -503,8 +482,6 @@ def attack(types_table, combat, attacker):
                             attack_functions_output = attack_hp(combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'], damage_dealt)
                             combat['team_user_objs'] = attack_functions_output[0]
                             combat['team_foe_objs'] = attack_functions_output[1]
-                        else: 
-                            failed = True
                     else:
                         attack_power_output = attack_power(types_table, combat['team_user_objs'], combat['active_user'], combat['team_foe_objs'], combat['active_foe'], attacker, combat['attacking']['attacks'])
                         combat['team_user_objs'] = attack_power_output[0]
@@ -529,8 +506,6 @@ def shift_foe(combat):
     return combat
 
 def check_life(combat): 
-    user_ko = False
-
     if combat['team_foe_objs'][combat['active_foe']].current_hp <= 0: 
         combat['team_foe_objs'][combat['active_foe']].current_hp = 0
         combat['team_foe_objs'][combat['active_foe']].ko = True
@@ -614,12 +589,14 @@ def load_attack_sprites():
     return sprites_list
 
 def playlist_music(SONG_END):
+    i = 0
     pygame.mixer.music.set_endevent(SONG_END)
     song_rel_path = os.path.join(os.path.dirname(__file__), 'music/song_' + str(random.randint(1,5)) + '.mp3')
     pygame.mixer.music.load(song_rel_path)
-    for i in range(13):
+    while i < 13:
         song_rel_path = os.path.join(os.path.dirname(__file__), 'music/song_' + str(random.randint(1,5)) + '.mp3')
         pygame.mixer.music.queue(song_rel_path)
+        i += 1
     pygame.mixer.music.set_volume(0.35)
     return pygame.mixer.music
 
